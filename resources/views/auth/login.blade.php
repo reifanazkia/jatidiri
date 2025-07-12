@@ -19,17 +19,17 @@
 
 <body class="bg-gradient-to-r from-[#3030F8] to-[#D7D7FE] ">
     <div
-        class="mt-30 max-w-80 border border-white bg-white rounded-xl 
-                        mx-auto shadow-md p-5 relative text-16">
+        class="mt-30 p-auto border w-464px border-white bg-white rounded-xl 
+                    mx-auto shadow-md p-5 relative text-16 gap-10">
         <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-10px mx-auto mb-2">
         <p class="text-center mb-4 text-24px font-bold">Jatidiri</p>
         <form action="">
             <label for="text">
                 <span
-                    class="block font-semibold text-16 mb-3 text-slate-700 ">Email<span
-                        class="text-slate-700 ml-1">*</span></span>
+                    class="mt-16 block font-semibold text-16 mb-3 text-slate-700 ">Email<span
+                        class="text-slate-700 ml-">*</span></span>
                 <input type="username" id="text" placeholder="Masukan Email"
-                    class="px-3 py-2 border shadow-xl rounded w-full block text-sm">
+                    class="px-3 py-2 border rounded w-full block text-sm">
             </label>
         </form>
         <form action="">
@@ -40,7 +40,7 @@
 
                 <div class="relative">
                     <input type="password" id="password" placeholder="Masukan Password Anda.."
-                        class="px-3 py-2 border shadow-xl rounded w-full block text-sm">
+                        class="px-3 py-2 border rounded w-full block text-sm">
 
                     <!-- Tombol mata -->
                     <button type="button" onclick="togglePassword()"
@@ -71,7 +71,7 @@
         <div class="flex items-center justify-between mt-3">
             <label>
                 <input type="checkbox" name="" id="" class="h-4 w-4 ">
-                <span class="text-sm">Ingatkan Saya</span>
+                <span class="text-sm font-bold">Ingatkan Saya</span>
             </label>
 
             <a href="#" class=" text-sm text-blue-600 hover:text-blue-800 underline">Lupa Password
