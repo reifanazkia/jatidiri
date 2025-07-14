@@ -7,9 +7,9 @@ use App\Models\Pricing;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class AgendaController extends Controller
+class PricingController extends Controller
 {
-    // Tampilkan semua agenda + pencarian
+    // Tampilkan semua pencarian
     public function index(Request $request)
     {
         $query = Pricing::query();
