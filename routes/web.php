@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\UnggulanController;
+use App\Http\Controllers\YutubController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 
@@ -39,5 +42,46 @@ Route::prefix('admin')->group(function () {
     Route::post('/ckeditor/upload', [AgendaController::class, 'upload'])->name('ckeditor.upload');
     Route::get('/agenda/{slug}', [AgendaController::class, 'show'])->name('agenda.show');
 });
+
+Route::prefix('yutubs')->group(function () {
+    Route::get('/', [YutubController::class, 'index'])->name('yutubs.index');
+    Route::post('/', [YutubController::class, 'store'])->name('yutubs.store');
+    Route::get('/{id}', [YutubController::class, 'show'])->name('yutubs.show');
+    Route::put('/{id}', [YutubController::class, 'update'])->name('yutubs.update');
+    Route::delete('/{id}', [YutubController::class, 'destroy'])->name('yutubs.destroy');
+});
+
+Route::prefix('programs')->group(function () {
+    Route::get('/', [ProgramController::class, 'index'])->name('programs.index');
+    Route::post('/', [ProgramController::class, 'store'])->name('programs.store');
+    Route::get('/{slug}', [ProgramController::class, 'show'])->name('programs.show');
+    Route::put('/{id}', [ProgramController::class, 'update'])->name('programs.update');
+    Route::delete('/{id}', [ProgramController::class, 'destroy'])->name('programs.destroy');
+    Route::post('/bulk-delete', [ProgramController::class, 'bulkDelete'])->name('programs.bulkDelete');
+    Route::post('/upload', [ProgramController::class, 'upload'])->name('programs.upload');
+});
+
+Route::prefix('unggulans')->group(function () {
+    Route::get('/', [UnggulanController::class, 'index'])->name('unggulans.index');
+    Route::post('/', [UnggulanController::class, 'store'])->name('unggulans.store');
+    Route::get('/{slug}', [UnggulanController::class, 'show'])->name('unggulans.show');
+    Route::put('/{id}', [UnggulanController::class, 'update'])->name('unggulans.update');
+    Route::delete('/{id}', [UnggulanController::class, 'destroy'])->name('unggulans.destroy');
+    Route::post('/bulk-delete', [UnggulanController::class, 'bulkDelete'])->name('unggulans.bulkDelete');
+    Route::post('/upload', [UnggulanController::class, 'upload'])->name('unggulans.upload');
+});
+
+
+
+Route::prefix('ourteam')->group(function () {
+    Route::get('/', [App\Http\Controllers\OurteamController::class, 'index'])->name('ourteam.index');
+    Route::post('/store', [App\Http\Controllers\OurteamController::class, 'store'])->name('ourteam.store');
+    Route::get('/show/{id}', [App\Http\Controllers\OurteamController::class, 'show'])->name('ourteam.show');
+    Route::post('/update/{id}', [App\Http\Controllers\OurteamController::class, 'update'])->name('ourteam.update');
+    Route::delete('/delete/{id}', [App\Http\Controllers\OurteamController::class, 'destroy'])->name('ourteam.destroy');
+});
+
+
+
 
 
