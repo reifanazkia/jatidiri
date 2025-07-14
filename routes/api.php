@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ApiAgendaController;
 use App\Http\Controllers\Api\ApiOurteamController;
 use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\Api\ApiProgramController;
 use App\Http\Controllers\Api\ApiUnggulanController;
 use Illuminate\Http\Request;
@@ -18,6 +19,8 @@ Route::get('/unggulan', [ApiUnggulanController::class, 'index']);
 Route::get('/unggulan/{slug}', [ApiUnggulanController::class, 'show']);
 Route::get('/ourteam', [ApiOurteamController::class, 'index']);
 Route::get('/ourteam/{id}', [ApiOurteamController::class, 'show']);
+Route::get('/pricing', [ApiPricingController::class, 'index']);
+Route::get('/pricing/{slug}', [ApiPricingController::class, 'show']);
 
 
 

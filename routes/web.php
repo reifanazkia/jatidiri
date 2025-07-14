@@ -12,6 +12,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+ Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -44,15 +46,15 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('yutubs')->group(function () {
-    Route::get('/', [YutubController::class, 'index'])->name('yutubs.index');
-    Route::post('/', [YutubController::class, 'store'])->name('yutubs.store');
-    Route::get('/{id}', [YutubController::class, 'show'])->name('yutubs.show');
-    Route::put('/{id}', [YutubController::class, 'update'])->name('yutubs.update');
-    Route::delete('/{id}', [YutubController::class, 'destroy'])->name('yutubs.destroy');
+    Route::get('/yutubs', [YutubController::class, 'index'])->name('yutubs.index');
+    Route::post('/yutubs', [YutubController::class, 'store'])->name('yutubs.store');
+    Route::get('/yutubs/{id}', [YutubController::class, 'show'])->name('yutubs.show');
+    Route::put('/yutub/{id}', [YutubController::class, 'update'])->name('yutubs.update');
+    Route::delete('/yutub/{id}', [YutubController::class, 'destroy'])->name('yutubs.destroy');
 });
 
 Route::prefix('programs')->group(function () {
-    Route::get('/', [ProgramController::class, 'index'])->name('programs.index');
+    Route::get('/program', [ProgramController::class, 'index'])->name('programs.index');
     Route::post('/', [ProgramController::class, 'store'])->name('programs.store');
     Route::get('/{slug}', [ProgramController::class, 'show'])->name('programs.show');
     Route::put('/{id}', [ProgramController::class, 'update'])->name('programs.update');
@@ -62,26 +64,38 @@ Route::prefix('programs')->group(function () {
 });
 
 Route::prefix('unggulans')->group(function () {
-    Route::get('/', [UnggulanController::class, 'index'])->name('unggulans.index');
-    Route::post('/', [UnggulanController::class, 'store'])->name('unggulans.store');
-    Route::get('/{slug}', [UnggulanController::class, 'show'])->name('unggulans.show');
-    Route::put('/{id}', [UnggulanController::class, 'update'])->name('unggulans.update');
-    Route::delete('/{id}', [UnggulanController::class, 'destroy'])->name('unggulans.destroy');
-    Route::post('/bulk-delete', [UnggulanController::class, 'bulkDelete'])->name('unggulans.bulkDelete');
-    Route::post('/upload', [UnggulanController::class, 'upload'])->name('unggulans.upload');
+    Route::get('/unggulans', [UnggulanController::class, 'index'])->name('unggulans.index');
+    Route::post('/unggulans', [UnggulanController::class, 'store'])->name('unggulans.store');
+    Route::get('/unggulans/{slug}', [UnggulanController::class, 'show'])->name('unggulans.show');
+    Route::put('/unggulans/{id}', [UnggulanController::class, 'update'])->name('unggulans.update');
+    Route::delete('/unggulans/{id}', [UnggulanController::class, 'destroy'])->name('unggulans.destroy');
+    Route::post('/unggulans-bulk-delete', [UnggulanController::class, 'bulkDelete'])->name('unggulans.bulkDelete');
+    Route::post('/unggulans/upload', [UnggulanController::class, 'upload'])->name('unggulans.upload');
 });
 
 
 
 Route::prefix('ourteam')->group(function () {
-    Route::get('/', [App\Http\Controllers\OurteamController::class, 'index'])->name('ourteam.index');
-    Route::post('/store', [App\Http\Controllers\OurteamController::class, 'store'])->name('ourteam.store');
-    Route::get('/show/{id}', [App\Http\Controllers\OurteamController::class, 'show'])->name('ourteam.show');
-    Route::post('/update/{id}', [App\Http\Controllers\OurteamController::class, 'update'])->name('ourteam.update');
-    Route::delete('/delete/{id}', [App\Http\Controllers\OurteamController::class, 'destroy'])->name('ourteam.destroy');
+    Route::get('/ourteam', [App\Http\Controllers\OurteamController::class, 'index'])->name('ourteam.index');
+    Route::post('/ourteam', [App\Http\Controllers\OurteamController::class, 'store'])->name('ourteam.store');
+    Route::get('/ourteam/{id}', [App\Http\Controllers\OurteamController::class, 'show'])->name('ourteam.show');
+    Route::post('/ourteam/{id}', [App\Http\Controllers\OurteamController::class, 'update'])->name('ourteam.update');
+    Route::delete('/ourteam/{id}', [App\Http\Controllers\OurteamController::class, 'destroy'])->name('ourteam.destroy');
 });
 
+use App\Http\Controllers\PricingController;
 
+Route::prefix('pricing')->group(function () {
+    Route::get('/pricing', [PricingController::class, 'index'])->name('pricing.index');
+    Route::post('/pricing', [PricingController::class, 'store'])->name('pricing.store');
+    Route::get('/pricing/{slug}', [PricingController::class, 'show'])->name('pricing.show');
+    Route::put('/pricing/{id}', [PricingController::class, 'update'])->name('pricing.update');
+    Route::delete('/pricing/{id}', [PricingController::class, 'destroy'])->name('pricing.destroy');
+    Route::post('/pricing/upload', [PricingController::class, 'upload'])->name('pricing.upload');
+    Route::post('/pricing-bulk-delete', [PricingController::class, 'bulkDelete'])->name('pricing.bulk-delete');
+
+
+});
 
 
 
