@@ -19,7 +19,7 @@
 
 <body class="bg-gradient-to-r from-[#3030F8] to-[#D7D7FE] ">
     <div
-        class="mt-30 max-w-80 border border-white bg-white rounded-xl 
+        class="mt-30 max-w-80 border border-white bg-white rounded-xl
                         mx-auto shadow-md p-5 relative text-16">
         <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-10px mx-auto mb-2">
         <p class="text-center mb-4 text-24px font-bold">Jatidiri</p>
