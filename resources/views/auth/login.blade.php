@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Jatidiri</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
-    <link href="./css/output.css" rel="stylesheet" />
-
+    <link href="{{ asset('css/output.css') }}" rel="stylesheet" />
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -27,14 +26,15 @@
         <h2 class="text-[24px] font-bold text-center mb-[24px] text-gray-800">Jatidiri</h2>
 
         <!-- Form -->
-        <form action="#" method="POST" class="space-y-4">
-
+        <form action="{{ route('login') }}" method="POST" class="space-y-4" id="loginForm">
+            @csrf
             <!-- Email -->
             <div>
                 <label for="email" class="block text-[16px] font-semibold text-[#010143] mb-[16px]">EMAIL <span
                         class="text-[#010143]">*</span></label>
                 <input type="email" id="email" name="email" placeholder="Alamat Email"
-                    class="w-full px-4 py-4 border rounded-xl text-[18px] font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-[12px]">
+                    class="w-full px-4 py-4 border rounded-xl text-[18px] font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-[12px]"
+                    required>
             </div>
 
             <!-- Password -->
@@ -43,16 +43,17 @@
                         class="text-[#010143]">*</span></label>
                 <div class="relative">
                     <input type="password" id="password" name="password" placeholder="Password"
-                        class="w-full px-4 py-4 border rounded-xl text-[18px] font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10">
+                        class="w-full px-4 py-4 border rounded-xl text-[18px] font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+                        required>
                     <!-- Eye toggle -->
                     <button type="button" onclick="togglePassword()"
                         class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500">
                         <svg id="eye-slash" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10
-                            0-1.308.25-2.557.7-3.7m3.028-1.896a9.986 9.986 0 014.272-.9c5.523
-                            0 10 4.477 10 10a9.96 9.96 0 01-1.175 4.725M15 12a3 3 0 11-6
-                            0 3 3 0 016 0zM3 3l18 18" />
+                                  0-1.308.25-2.557.7-3.7m3.028-1.896a9.986 9.986 0 014.272-.9c5.523
+                                  0 10 4.477 10 10a9.96 9.96 0 01-1.175 4.725M15 12a3 3 0 11-6
+                                  0 3 3 0 016 0zM3 3l18 18" />
                         </svg>
                         <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -69,17 +70,17 @@
             <!-- Ingatkan Saya + Lupa Password -->
             <div class="flex items-center justify-between">
                 <label class="flex items-center space-x-2">
-                    <input type="checkbox"
+                    <input type="checkbox" name="remember"
                         class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                     <span class="text-[16px] font-semibold text-gray-900">Ingatkan Saya</span>
                 </label>
-                <a href="#" class="text-[16px] text-indigo-600 hover:underline">Lupa Password?</a>
+                <a href="{{ route('password.request') }}" class="text-[16px] text-indigo-600 hover:underline">Lupa
+                    Password?</a>
             </div>
 
             <!-- Tombol -->
-            <button id="btnSubmit" type="submit" onclick="handleLoginClick(event)"
+            <button id="btnSubmit" type="submit"
                 class="relative w-full py-3 mb-8 bg-indigo-700 text-white rounded-full hover:bg-indigo-800 transition text-[18px] font-semibold tracking-wider overflow-hidden">
-
                 <!-- Teks -->
                 <span id="btnText">Login</span>
 
@@ -93,11 +94,8 @@
                         </svg>
                         Loading...
                     </span>
-
                 </div>
             </button>
-
-
         </form>
     </div>
 
@@ -118,11 +116,9 @@
                 eyeSlash.classList.remove("hidden");
             }
         }
-    </script>
 
-    <script>
-        function handleLoginClick(e) {
-            e.preventDefault();
+        // Spinner saat form disubmit
+        document.getElementById('loginForm').addEventListener('submit', function() {
             const btn = document.getElementById("btnSubmit");
             const text = document.getElementById("btnText");
             const spinner = document.getElementById("btnSpinner");
@@ -130,15 +126,8 @@
             spinner.classList.remove("hidden");
             text.classList.add("opacity-0");
             btn.disabled = true;
-
-            setTimeout(() => {
-                spinner.classList.add("hidden");
-                text.classList.remove("opacity-0");
-                btn.disabled = false;
-            }, 2000);
-        }
+        });
     </script>
-
 </body>
 
 </html>

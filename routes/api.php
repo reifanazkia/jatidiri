@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ApiOurteamController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\Api\ApiProgramController;
+use App\Http\Controllers\Api\ApiTestimonyController;
 use App\Http\Controllers\Api\ApiUnggulanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,8 @@ Route::get('/ourteam', [ApiOurteamController::class, 'index']);
 Route::get('/ourteam/{id}', [ApiOurteamController::class, 'show']);
 Route::get('/pricing', [ApiPricingController::class, 'index']);
 Route::get('/pricing/{slug}', [ApiPricingController::class, 'show']);
+Route::get('/testimony', [ApiTestimonyController::class, 'index']);
+Route::get('/testimony/{slug}', [ApiTestimonyController::class, 'show']);
 
 
 
