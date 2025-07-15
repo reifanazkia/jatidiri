@@ -28,5 +28,10 @@ class Program extends Model
     {
         return $this->hasMany(Pricing::class, 'program_id');
     }
+
+    public function testimony()
+    {
+        return $this->hasMany(Testimony::class, 'program_id');
+    }
 }
 
