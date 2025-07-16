@@ -31,7 +31,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name'  => 'required|unique:categories,name',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $slug = $this->generateUniqueSlug(Str::slug($request->name));

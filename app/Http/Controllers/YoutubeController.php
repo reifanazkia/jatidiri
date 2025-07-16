@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Yutub;
 use Illuminate\Http\Request;
 
-class YutubController extends Controller
+class YoutubeController extends Controller
 {
     public function index()
     {
