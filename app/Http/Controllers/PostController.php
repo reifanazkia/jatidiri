@@ -25,7 +25,6 @@ class PostController extends Controller
         }
 
         $posts = $query->latest()->paginate(10);
-
         return view('admin.post.index', compact('posts'));
     }
 
@@ -42,13 +41,16 @@ class PostController extends Controller
             'description'  => 'nullable',
             'content'      => 'nullable',
             'category_id'  => 'required|exists:categories,id',
-            'image'        => 'nullable|string',
+            'image'        => 'nullable|image|max:750',
             'pub_date'     => 'required|date',
         ]);
 
-        $baseSlug = Str::slug($request->title);
-        $validated['slug'] = $this->generateUniqueSlug($baseSlug);
+        $validated['slug'] = $this->generateUniqueSlug(Str::slug($request->title));
         $validated['user_id'] = Auth::id();
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('post', 'public');
+        }
 
         Post::create($validated);
 
@@ -64,19 +66,19 @@ class PostController extends Controller
             'description'  => 'nullable',
             'content'      => 'nullable',
             'category_id'  => 'required|exists:categories,id',
-            'image'        => 'nullable|string',
+            'image'        => 'nullable|image|max:750',
             'pub_date'     => 'required|date',
         ]);
 
         if ($request->title !== $post->title) {
-            $baseSlug = Str::slug($request->title);
-            $validated['slug'] = $this->generateUniqueSlug($baseSlug, $post->id);
+            $validated['slug'] = $this->generateUniqueSlug(Str::slug($request->title), $post->id);
         }
 
-        if ($request->has('image') && $request->image !== $post->image) {
-            if ($post->image && Storage::disk('public')->exists($post->image)) {
+        if ($request->hasFile('image')) {
+            if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
+            $validated['image'] = $request->file('image')->store('post', 'public');
         }
 
         $post->update($validated);
@@ -88,7 +90,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        if ($post->image && Storage::disk('public')->exists($post->image)) {
+        if ($post->image) {
             Storage::disk('public')->delete($post->image);
         }
 
@@ -104,7 +106,7 @@ class PostController extends Controller
         $posts = Post::whereIn('id', $request->ids)->get();
 
         foreach ($posts as $post) {
-            if ($post->image && Storage::disk('public')->exists($post->image)) {
+            if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
             $post->delete();
@@ -133,7 +135,7 @@ class PostController extends Controller
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('uploads/post', $filename, 'public');
+            $path = $file->storeAs('post/ckeditor', $filename, 'public');
 
             return response()->json([
                 'url' => asset('storage/' . $path),

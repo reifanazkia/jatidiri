@@ -8,8 +8,4 @@ class Yutub extends Model
 {
     protected $fillable = ['link'];
 
-    public function programs()
-    {
-        return $this->hasMany(Program::class, 'id_yt', 'id');
-    }
 }

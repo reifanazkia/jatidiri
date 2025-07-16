@@ -1,7 +1,11 @@
  <?php
 
 use App\Http\Controllers\Api\ApiAgendaController;
+use App\Http\Controllers\Api\ApiDukunganController;
+use App\Http\Controllers\Api\ApiLegalController;
 use App\Http\Controllers\Api\ApiOurteamController;
+use App\Http\Controllers\Api\ApiPartnerController;
+use App\Http\Controllers\Api\ApiPortofolioController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\Api\ApiProgramController;
@@ -24,6 +28,14 @@ Route::get('/pricing', [ApiPricingController::class, 'index']);
 Route::get('/pricing/{slug}', [ApiPricingController::class, 'show']);
 Route::get('/testimony', [ApiTestimonyController::class, 'index']);
 Route::get('/testimony/{slug}', [ApiTestimonyController::class, 'show']);
+Route::get('/portofolio', [ApiPortofolioController::class, 'index']);
+Route::get('/portofolio/{slug}', [ApiPortofolioController::class, 'show']);
+Route::get('/dukungan', [ApiDukunganController::class, 'index']);
+Route::get('/dukungan/{slug}', [ApiDukunganController::class, 'show']);
+Route::get('/legal', [ApiLegalController::class, 'index']);
+Route::get('/legal/{id}', [ApiLegalController::class, 'show']);
+Route::get('/partner', [ApiPartnerController::class, 'index']);
+Route::get('/partner/{id}', [ApiPartnerController::class, 'show']);
 
 
 

@@ -19,11 +19,6 @@ class Program extends Model
         return $this->hasMany(Unggulan::class, 'program_id');
     }
 
-    public function yutub()
-    {
-        return $this->belongsTo(Yutub::class, 'id_yt', 'id');
-    }
-
     public function pricing()
     {
         return $this->hasMany(Pricing::class, 'program_id');
@@ -32,6 +27,11 @@ class Program extends Model
     public function testimony()
     {
         return $this->hasMany(Testimony::class, 'program_id');
+    }
+
+    public function portofolio()
+    {
+        return $this->hasMany(Portofolio::class, 'program_id');
     }
 }
 
