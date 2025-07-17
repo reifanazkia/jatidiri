@@ -29,7 +29,8 @@
             <img src="./img/Jatidiri.png" alt="laptop" class="w-[138px] h-[57px]" />
         </div>
 
-        <div class="p-6 bg-white w-[1384px] text-[20px] font-bold shadow-xl flex items-center gap-7 rounded-2xl    relative">
+        <div
+            class="p-6 bg-white w-[1384px] text-[20px] font-bold shadow-xl flex items-center gap-7 rounded-2xl    relative">
             Home
 
             <!-- Profil Avatar -->
@@ -83,13 +84,14 @@
                     </a>
                 </li>
 
+                <!-- Dropdown Blog & Agenda -->
                 <li class="mt-5">
-                    <a href="#"
-                        class="group flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-md font-semibold hover:bg-[#3030F8] hover:scale-110 transition duration-200">
-
+                    <button type="button"
+                        class="group w-full flex items-center justify-between gap-3 px-5 py-3 bg-white rounded-2xl shadow-md font-semibold hover:bg-[#3030F8] hover:scale-110 transition duration-200"
+                        onclick="document.getElementById('blogDropdown').classList.toggle('hidden')">
                         <span class="flex gap-2 text-black group-hover:text-white text-[15px] leading-none transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 text-black group-hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="w-5 h-5 text-black group-hover:text-white transition" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z"
                                     clip-rule="evenodd" />
@@ -97,9 +99,30 @@
                                     d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375ZM6 12a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V12Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM6 15a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V15Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM6 18a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V18Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Blog & Agenda</span>
-                    </a>
+                            Blog & Agenda
+                        </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="w-4 h-4 text-black group-hover:text-white">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <!-- Submenu -->
+                    <ul id="blogDropdown" class="ml-10 mt-5 space-y-2 hidden">
+                        <li>
+                            <a href="/blog" class="block px-3 py-2 rounded-xl bg-[#3030F8] shadow-xl text-md text-black hover:bg-slate-500">
+                                <span class="px-5 font-medium text-[20px] font-[Outfit] text-white ">posts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/agenda" class="block px-3 py-2 rounded-xl text-sm text-black hover:bg-blue-100">
+                                Agenda
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
 
 
                 <li class="mt-5">
