@@ -33,7 +33,7 @@ class IdentityController extends Controller
             'day_service' => 'nullable|string',
             'time_service' => 'nullable|string',
             'logo' => 'nullable|image|max:300',
-            'favicon' => 'nullable|image|max:100', 
+            'favicon' => 'nullable|image|max:100',
         ]);
 
         $identity->fill($request->except('logo', 'favicon'));
@@ -70,5 +70,17 @@ class IdentityController extends Controller
 
         return redirect()->back()->with('success', 'Identitas berhasil diperbarui!');
     }
-}
 
+    public function upload(Request $request)
+    {
+        if ($request->hasFile('upload')) {
+            $file = $request->file('upload');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('uploads/identity', $filename, 'public');
+
+            return response()->json([
+                'url' => asset('storage/' . $path),
+            ]);
+        }
+    }
+}

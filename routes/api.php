@@ -1,14 +1,18 @@
  <?php
 
 use App\Http\Controllers\Api\ApiAgendaController;
+use App\Http\Controllers\Api\ApiChatController;
 use App\Http\Controllers\Api\ApiDukunganController;
+use App\Http\Controllers\Api\ApiGanalyticsController;
 use App\Http\Controllers\Api\ApiLegalController;
 use App\Http\Controllers\Api\ApiOurteamController;
 use App\Http\Controllers\Api\ApiPartnerController;
+use App\Http\Controllers\Api\ApiPixelsController;
 use App\Http\Controllers\Api\ApiPortofolioController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\Api\ApiProgramController;
+use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\Api\ApiSliderController;
 use App\Http\Controllers\Api\ApiTestimonyController;
 use App\Http\Controllers\Api\ApiUnggulanController;
@@ -38,6 +42,11 @@ Route::get('/legal/{id}', [ApiLegalController::class, 'show']);
 Route::get('/partner', [ApiPartnerController::class, 'index']);
 Route::get('/partner/{id}', [ApiPartnerController::class, 'show']);
 Route::get('/slider', [ApiSliderController::class, 'index']);
+Route::get('/pixel', [ApiPixelsController::class, 'index']);
+Route::get('/google-analytics', [ApiGanalyticsController::class, 'index']);
+Route::get('/chat', [ApiChatController::class, 'index']);
+Route::get('/service', [ApiServiceController::class, 'index']);
+Route::get('/service/{slug}', [ApiServiceController::class, 'show']);
 
 
 

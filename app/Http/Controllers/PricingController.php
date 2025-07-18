@@ -81,7 +81,7 @@ class PricingController extends Controller
             if ($pricing->image && Storage::disk('public')->exists($pricing->image)) {
                 Storage::disk('public')->delete($pricing->image);
             }
-            $data['image'] = $request->file('image')->store('agenda', 'public');
+            $data['image'] = $request->file('image')->store('pricing', 'public');
         }
 
         $pricing->update($data);
