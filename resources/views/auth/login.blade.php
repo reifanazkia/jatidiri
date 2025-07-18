@@ -168,37 +168,6 @@
         const btn = document.getElementById("btnSubmit");
         const text = document.getElementById("btnText");
         const spinner = document.getElementById("btnSpinner");
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // cegah submit langsung
-
-            // 1️⃣  Tampilkan spinner + disable tombol segera
-            spinner.classList.remove("hidden");
-            text.classList.add("opacity-0");
-            btn.disabled = true;
-
-            // 2️⃣  Munculkan SweetAlert
-            Swal.fire({
-                title: 'Yakin ingin login?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Login',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#6366f1',
-                cancelButtonColor: '#d33',
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    // 3️⃣  Pengguna setuju → submit form sungguhan
-                    form.submit();
-                } else {
-                    // 4️⃣  Pengguna batal → kembalikan ke keadaan awal
-                    spinner.classList.add("hidden");
-                    text.classList.remove("opacity-0");
-                    btn.disabled = false;
-                }
-            });
-        });
     </script>
 
 

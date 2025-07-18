@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+
     Route::get('/statistik', [SvgController::class, 'statistik'])->name('statistik.index');
     Route::get('/svg/{id}/edit', [SvgController::class, 'edit'])->name('svg.edit');
     Route::put('/svg/{id}', [SvgController::class, 'update'])->name('svg.update');
