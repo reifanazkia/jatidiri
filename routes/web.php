@@ -31,8 +31,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Admin Posts
-    Route::prefix('posts')->group(function () {
-        Route::get('/posts', [PostController::class, 'index'])->name('posts');
+    Route::prefix('posts')->name('posts.')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
