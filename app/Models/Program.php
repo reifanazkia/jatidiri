@@ -33,5 +33,10 @@ class Program extends Model
     {
         return $this->hasMany(Portofolio::class, 'program_id');
     }
+
+    public function slider()
+    {
+        return $this->hasMany(Slider::class, 'program_id');
+    }
 }
 

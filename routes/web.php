@@ -17,6 +17,10 @@ use App\Http\Controllers\SvgController;
 use App\Http\Controllers\TestimonyController;
 use App\Http\Controllers\VisiController;
 use App\Http\Controllers\YoutubeController;
+use App\Http\Controllers\IdentityController;
+use App\Http\Controllers\HeaderController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SliderController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -188,4 +192,34 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/patner/{id}', [PartnerController::class, 'destroy'])->name('patner.destroy');
         Route::post('/patner/upload', [PartnerController::class, 'upload'])->name('patner.upload');
     });
+    
+    Route::prefix('identity')->group(function () {
+        Route::get('/identity/{id}/edit', [IdentityController::class, 'edit'])->name('identity.edit');
+        Route::post('/identity/{id}', [IdentityController::class, 'update'])->name('identity.update');
+    });
+
+    Route::prefix('headers')->group(function () {
+        Route::get('/headers', [HeaderController::class, 'index'])->name('header.index');
+        Route::get('/headers/{id}/edit', [HeaderController::class, 'edit'])->name('header.edit');
+        Route::put('/headers/{id}', [HeaderController::class, 'update'])->name('header.update');
+        Route::delete('/headers/{id}/image', [HeaderController::class, 'destroyImage'])->name('header.image.delete');
+        Route::post('/headers/upload', [HeaderController::class, 'upload'])->name('headers.upload');
+    });
+
+    Route::prefix('slider')->group(function () {
+        Route::get('/slider', [SliderController::class, 'index'])->name('slider.index');
+        Route::get('/slider/{id}', [SliderController::class, 'show'])->name('slider.show');
+        Route::put('/slider/{id}', [SliderController::class, 'update'])->name('slider.update');
+        Route::delete('/slider/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
+        Route::post('/slider/upload', [SliderController::class, 'upload'])->name('slider.upload');
+    });
+
+    Route::prefix('service')->group(function () {
+        Route::get('/service', [ServiceController::class, 'index'])->name('service.index');
+        Route::get('/service/{slug}', [ServiceController::class, 'show'])->name('service.show');
+        Route::put('/service/{id}', [ServiceController::class, 'update'])->name('service.update');
+        Route::delete('/service/{id}', [ServiceController::class, 'destroy'])->name('service.destroy');
+        Route::post('/service/upload', [ServiceController::class, 'upload'])->name('service.upload');
+    });
+
 });
