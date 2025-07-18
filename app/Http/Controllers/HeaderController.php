@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Header;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class HeaderController extends Controller
@@ -63,17 +64,16 @@ class HeaderController extends Controller
         return response()->json(['error' => 'No file uploaded'], 400);
     }
 
-    public function destroyImage($id)
+   public function destroy($id)
     {
         $header = Header::findOrFail($id);
 
-        if ($header->image && file_exists(public_path($header->image))) {
-            unlink(public_path($header->image));
+        if ($header->image && Storage::disk('public')->exists($header->image)) {
+            Storage::disk('public')->delete($header->image);
         }
 
-        $header->image = null;
-        $header->save();
+        $header->delete();
 
-        return redirect()->back()->with('success', 'Gambar header berhasil dihapus.');
+        return redirect()->route('header.index')->with('success', 'Agenda dan gambarnya berhasil dihapus.');
     }
 }

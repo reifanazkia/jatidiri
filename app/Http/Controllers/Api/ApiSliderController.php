@@ -13,8 +13,7 @@ class ApiSliderController extends Controller
         $query = Slider::query();
 
         if ($request->has('search') && $request->search != '') {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('slug', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
 
         $sliders = $query->latest()->get();
