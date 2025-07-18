@@ -122,7 +122,7 @@
                         <!-- Submenu: Posts -->
                         <div
                             class="bg-slate-700 rounded-xl shadow-md px-4 py-3 transition hover:bg-[#3030F8] hover:scale-105 group">
-                            <a href="posts.index"
+                            <a href="{{ route('posts.index') }}"
                                 class="block text-[16px] font-medium text-gray-300 transition group-hover:text-white">
                                 • Posts
                             </a>

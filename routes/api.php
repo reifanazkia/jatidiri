@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\Api\ApiSliderController;
 use App\Http\Controllers\Api\ApiTestimonyController;
 use App\Http\Controllers\Api\ApiUnggulanController;
+use App\Http\Controllers\Api\ApiWhyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,8 @@ Route::get('/google-analytics', [ApiGanalyticsController::class, 'index']);
 Route::get('/chat', [ApiChatController::class, 'index']);
 Route::get('/service', [ApiServiceController::class, 'index']);
 Route::get('/service/{slug}', [ApiServiceController::class, 'show']);
+Route::get('/why', [ApiWhyController::class, 'index']);
+Route::get('/why/{slug}', [ApiWhyController::class, 'show']);
 
 
 
