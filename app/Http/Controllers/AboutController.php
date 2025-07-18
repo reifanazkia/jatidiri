@@ -4,28 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\About;
+use App\Models\Visi;
+use App\Models\Misi;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AboutController extends Controller
 {
-    // Tampilkan semua data
+    // Menampilkan semua data About, Visi, Misi di 1 halaman
     public function index(Request $request)
     {
-        $query = About::query();
-        $abouts = $query->latest()->get();
-
-        return view('abouts.index', compact('abouts'));
+        return view('abouts.index', [
+            'abouts' => About::latest()->get(),
+            'visis' => Visi::latest()->get(),
+            'misis' => Misi::latest()->get(),
+        ]);
     }
 
-    // Tampilkan detail berdasarkan slug
+    // Tampilkan detail 1 About berdasarkan slug
     public function show($slug)
     {
         $about = About::where('slug', $slug)->firstOrFail();
-        return view('abouts.index', compact('about'));
+        return view('abouts.show', compact('about'));
     }
 
-    // Perbarui data
+    // Perbarui data About
     public function update(Request $request, $id)
     {
         $about = About::findOrFail($id);
@@ -42,13 +45,11 @@ class AboutController extends Controller
 
         $data = $request->except(['image1', 'image2', 'video', 'slug']);
 
-        // Slug otomatis kalau title berubah
         if ($about->title !== $request->title) {
             $baseSlug = Str::slug($request->title);
             $data['slug'] = $this->generateUniqueSlug($baseSlug);
         }
 
-        // Handle image1
         if ($request->hasFile('image1')) {
             if ($about->image1 && Storage::disk('public')->exists($about->image1)) {
                 Storage::disk('public')->delete($about->image1);
@@ -56,7 +57,6 @@ class AboutController extends Controller
             $data['image1'] = $request->file('image1')->store('abouts', 'public');
         }
 
-        // Handle image2
         if ($request->hasFile('image2')) {
             if ($about->image2 && Storage::disk('public')->exists($about->image2)) {
                 Storage::disk('public')->delete($about->image2);
@@ -64,7 +64,6 @@ class AboutController extends Controller
             $data['image2'] = $request->file('image2')->store('abouts', 'public');
         }
 
-        // Handle video
         if ($request->hasFile('video')) {
             if ($about->video && Storage::disk('public')->exists($about->video)) {
                 Storage::disk('public')->delete($about->video);
@@ -74,10 +73,10 @@ class AboutController extends Controller
 
         $about->update($data);
 
-        return redirect()->route('abouts.index')->with('success', 'Data berhasil diperbarui.');
+        return redirect()->route('about.index')->with('success', 'Data about berhasil diperbarui.');
     }
 
-    // Hapus data
+    // Hapus data About
     public function destroy($id)
     {
         $about = About::findOrFail($id);
@@ -90,10 +89,10 @@ class AboutController extends Controller
 
         $about->delete();
 
-        return redirect()->route('abouts.index')->with('success', 'Data berhasil dihapus.');
+        return redirect()->route('about.index')->with('success', 'Data about berhasil dihapus.');
     }
 
-    // Slug unik
+    // Membuat slug unik
     protected function generateUniqueSlug($slug)
     {
         $uniqueSlug = $slug;

@@ -25,13 +25,13 @@ class PostController extends Controller
         }
 
         $posts = $query->latest()->paginate(10);
-        return view('admin.post.index', compact('posts'));
+        return view('posts.index', compact('posts'));
     }
 
     public function show($slug)
     {
         $post = Post::with('category', 'author')->where('slug', $slug)->firstOrFail();
-        return view('admin.post.show', compact('post'));
+        return view('posts.index', compact('post'));
     }
 
     public function store(Request $request)

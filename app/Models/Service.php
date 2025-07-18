@@ -10,6 +10,7 @@ class Service extends Model
 {
     use HasFactory;
 
+    protected $table = 'services';
     protected $fillable = [
         'name', 'slug',
         'title1', 'description1', 'image1',
@@ -17,5 +18,10 @@ class Service extends Model
         'title3', 'description3', 'image3',
         'title4', 'description4', 'image4',
     ];
+
+    public function why()
+    {
+        return $this->hasMany(Why::class);
+    }
 }
 
