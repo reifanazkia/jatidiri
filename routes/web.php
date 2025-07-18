@@ -31,8 +31,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Admin Posts
-    Route::prefix('admin')->group(function () {
-        Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::prefix('posts')->group(function () {
+        Route::get('/posts', [PostController::class, 'index'])->name('posts');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Admin Category
-    Route::prefix('admin')->group(function () {
+    Route::prefix('posts')->group(function () {
         Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
         Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
         Route::put('/category/{id}', [CategoryController::class, 'update'])->name('category.update');
@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Admin Agenda
-    Route::prefix('admin')->group(function () {
+    Route::prefix('posts')->group(function () {
         Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
         Route::post('/agenda', [AgendaController::class, 'store'])->name('agenda.store');
         Route::delete('/agenda/{id}', [AgendaController::class, 'destroy'])->name('agenda.destroy');

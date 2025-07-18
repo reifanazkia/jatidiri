@@ -15,58 +15,63 @@
     </style>
 </head>
 
-<body class="bg-[#D7D7FE] p-2">
-    <div class="flex gap-2">
-        <!-- Navbar Atas -->
-        <div class="p-6 bg-white w-[288px] h-[116px] flex items-center gap-6 shadow-2xl rounded-2xl">
-            <button onclick="toggleNavbar()" id="menuButton">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
-                    stroke="currentColor"
-                    class="w-10 h-10 text-[#3030F8] hover:scale-125 transition delay-100 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+<body class="bg-[#D7D7FE]">
+    <div class=" bg-white w-full h-[58px] md:p-6 md:w-full md:h-[116px] flex items-center justify-between gap-6 shadow-md rounded-r-2xl relative">
+        <!-- Kiri: Tombol Menu, Logo, dan Home -->
+        <div class="flex items-center gap-3 md:gap-6 ">
+            <!-- Tombol Menu -->
+            <button onclick="toggleNavbar()" id="menuButton" class="z-30">
+                <svg id="iconBars" class=" w-4 h-4 md:w-8 md:h-8 text-blue-600 hover:scale-125 transition cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg id="iconClose" class="w-8 h-8 text-blue-600 hidden hover:scale-110 transition cursor-pointer" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <img src="./img/Jatidiri.png" alt="laptop" class="w-[138px] h-[57px]" />
+
+
+
+
+            <!-- Logo -->
+            <img src="./img/Jatidiri.png" alt="Logo" class="w-[69px] h-[28px] md:w-[138px] md:h-[57px]" />
+
+            <!-- Garis Vertikal -->
+            <div class="w-px h-10 md:h-20 border border-gray-500"></div>
+
+            <!-- Home Text -->
+            <span class="text-[20px] font-semibold text-gray-800">Home</span>
         </div>
 
+        <!-- Kanan: Avatar dan Info User -->
         <div
-            class="p-6 bg-white w-[1384px] text-[20px] font-bold shadow-xl flex items-center gap-7 rounded-2xl    relative">
-            Home
+            class="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full shadow hover:scale-105 transition duration-300">
+            <!-- Avatar -->
+            <img src="https://i.pravatar.cc/40?img=3" alt="User" class="w-10 h-10 rounded-full" />
 
-            <!-- Profil Avatar -->
-            <!-- Avatar dan Logout dalam satu flex container -->
-            <div
-                class="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow absolute right-3 hover:scale-105 transition duration-300">
-
-                <!-- Avatar -->
-                <img src="https://i.pravatar.cc/40?img=3" alt="User" class="w-10 h-10 rounded-full" />
-
-                <!-- Info user -->
-                <div class="flex flex-col justify-center">
-                    <span class="font-semibold text-[16px] leading-tight">Aelxander</span>
-                    <span class="text-[14px] text-gray-500 leading-tight">Admin</span>
-                </div>
-
-                <!-- Logout Button -->
-                <button onclick="confirmLogout()" title="Logout">
-                    <!-- Icon logout merah -->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2" class="w-6 h-6 text-red-600 cursor-pointer">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-                    </svg>
-                </button>
-
-
+            <!-- Info user -->
+            <div class="flex flex-col justify-center">
+                <span class="font-semibold text-[16px] leading-tight">Aelxander</span>
+                <span class="text-[14px] text-gray-500 leading-tight">Admin</span>
             </div>
 
+            <!-- Logout Button -->
+            <button onclick="confirmLogout()" title="Logout">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2" class="w-6 h-6 text-red-600 cursor-pointer">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                </svg>
+            </button>
         </div>
     </div>
 
+
     <!-- Sidebar -->
-    <div class="flex py-2 justify-between gap-4 h-[300px] w-full ">
+    <div class=" flex justify-between gap-4  w-full h-full">
         <nav id="sidebar"
-            class="bg-white px-5 py-5 w-63 rounded-xl h-[300px] transform transition-transform duration-300  ease-in-out ">
+            class=" scroll p-5 rounded-b-xl transition-all duration-500 ease-in-out transform -translate-x-full opacity-0 hidden w-[250px] min-h-screen bg-white shadow-lg ">
             <ul class="mb-60">
                 <li class="mt-5">
                     <a href="dashboard"
@@ -85,13 +90,14 @@
                 </li>
 
                 <!-- Dropdown Blog & Agenda -->
+                <!-- Dropdown Blog & Agenda (mirip About) -->
                 <li class="mt-5">
-                    <button type="button"
-                        class="group w-full flex items-center justify-between gap-3 px-5 py-3 bg-white rounded-2xl shadow-md font-semibold hover:bg-[#3030F8] hover:scale-110 transition duration-200"
-                        onclick="document.getElementById('blogDropdown').classList.toggle('hidden')">
+                    <!-- Toggle Button -->
+                    <button type="button" onclick="document.getElementById('blogDropdown').classList.toggle('hidden')"
+                        class="group flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-md font-semibold hover:bg-[#3030F8] hover:scale-110 transition duration-200 w-full">
                         <span class="flex gap-2 text-black group-hover:text-white text-[15px] leading-none transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                class="w-5 h-5 text-black group-hover:text-white transition" viewBox="0 0 24 24">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 text-black group-hover:text-white transition">
                                 <path fill-rule="evenodd"
                                     d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z"
                                     clip-rule="evenodd" />
@@ -101,27 +107,40 @@
                             </svg>
                             Blog & Agenda
                         </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="w-4 h-4 text-black group-hover:text-white">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 9l-7 7-7-7" />
+
+                        <!-- Chevron -->
+                        <svg class="w-4 h-4 text-black group-hover:text-white  transform transition-transform"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
                         </svg>
                     </button>
 
                     <!-- Submenu -->
-                    <ul id="blogDropdown" class="ml-10 mt-5 space-y-2 hidden">
-                        <li>
-                            <a href="/blog" class="block px-3 py-2 rounded-xl bg-[#3030F8] shadow-xl text-md text-black hover:bg-slate-500">
-                                <span class="px-5 font-medium text-[20px] font-[Outfit] text-white ">posts</span>
+                    <div id="blogDropdown" class="hidden ml-4 mt-3 space-y-3">
+
+                        <!-- Submenu: Posts -->
+                        <div
+                            class="bg-slate-700 rounded-xl shadow-md px-4 py-3 transition hover:bg-[#3030F8] hover:scale-105 group">
+                            <a href="posts.index"
+                                class="block text-[16px] font-medium text-gray-300 transition group-hover:text-white">
+                                • Posts
                             </a>
-                        </li>
-                        <li>
-                            <a href="/agenda" class="block px-3 py-2 rounded-xl text-sm text-black hover:bg-blue-100">
-                                Agenda
+                        </div>
+
+                        <!-- Submenu: Agenda -->
+                        <div
+                            class="bg-slate-700 rounded-xl shadow-md px-4 py-3 transition hover:bg-[#3030F8] hover:scale-105 group">
+                            <a href="/agenda"
+                                class="block text-[16px] font-medium text-gray-300 transition group-hover:text-white">
+                                • Agenda
                             </a>
-                        </li>
-                    </ul>
+                        </div>
+
+                    </div>
+
                 </li>
+
 
 
 
@@ -197,28 +216,57 @@
 
             </ul>
         </nav>
+
         <main id="mainContent"
-            class="flex-1 p-6 bg-white rounded-xl transform transition-transform shadow-md ease-in-out">
-            <div>
+            class="flex-1 py-2 px-6 bg-[#D7D7FE] min-h-screen transition-all duration-500 ease-in-out">
+            <!-- Konten Putih -->
+            <div class="bg-[#D7D7FE] p-1 rounded-xl">
                 @yield('content')
             </div>
-        </main>
 
     </div>
+    </main>
+    </div>
+    <footer class="bg-white w-full shadow-md py-4 mt-3">
+        <div class="text-center text-gray-500 text-sm">
+            &copy; {{ date('2012-2025 ') }} Jatidiri.app
+        </div>
+    </footer>
 
     <script>
         function toggleNavbar() {
-            const sidebar = document.getElementById('sidebar');
-            const main = document.getElementById('mainContent');
+            const sidebar = document.getElementById("sidebar");
+            const iconBars = document.getElementById("iconBars");
+            const iconClose = document.getElementById("iconClose");
 
-            // 1. Sembunyikan / tampilkan sidebar
-            sidebar.classList.toggle('hidden');
+            const isVisible = !sidebar.classList.contains("hidden");
 
-            /* 2. Saat sidebar disembunyikan, biar konten betul‑betul full‑width
-               Kita tambahkan / hapus kelas w-full (atau apa pun yang Anda suka) */
-            main.classList.toggle('w-full');
+            if (isVisible) {
+                // Sembunyikan sidebar
+                sidebar.classList.add("opacity-0", "-translate-x-full");
+                setTimeout(() => {
+                    sidebar.classList.add("hidden");
+                }, 300); // delay untuk biar animasi selesai dulu
+
+                // Ganti ikon
+                iconBars.classList.remove("hidden");
+                iconClose.classList.add("hidden");
+            } else {
+                // Tampilkan sidebar
+                sidebar.classList.remove("hidden");
+                setTimeout(() => {
+                    sidebar.classList.remove("opacity-0", "-translate-x-full");
+                }, 10); // kecil agar animasi smooth
+
+                // Ganti ikon
+                iconBars.classList.add("hidden");
+                iconClose.classList.remove("hidden");
+            }
         }
     </script>
+
+
+
 
     <!-- SweetAlert2 CDN -->
 
