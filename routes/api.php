@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ApiPortofolioController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\Api\ApiProgramController;
+use App\Http\Controllers\Api\ApiSliderController;
 use App\Http\Controllers\Api\ApiTestimonyController;
 use App\Http\Controllers\Api\ApiUnggulanController;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ Route::get('/legal', [ApiLegalController::class, 'index']);
 Route::get('/legal/{id}', [ApiLegalController::class, 'show']);
 Route::get('/partner', [ApiPartnerController::class, 'index']);
 Route::get('/partner/{id}', [ApiPartnerController::class, 'show']);
-
+Route::get('/slider', [ApiSliderController::class, 'index']);
 
 
 
