@@ -16,18 +16,16 @@
 </head>
 
 <body class="bg-[#D7D7FE]">
-    <div class=" bg-white w-full h-[58px] md:p-6 md:w-full md:h-[116px] flex items-center justify-between gap-6 shadow-md rounded-r-2xl relative">
+    <div
+        class=" bg-white w-full h-[58px] md:p-6 md:w-full md:h-[116px] flex items-center justify-between gap-6 shadow-md rounded-r-2xl relative">
         <!-- Kiri: Tombol Menu, Logo, dan Home -->
         <div class="flex items-center gap-3 md:gap-6 ">
             <!-- Tombol Menu -->
             <button onclick="toggleNavbar()" id="menuButton" class="z-30">
-                <svg id="iconBars" class=" w-4 h-4 md:w-8 md:h-8 text-blue-600 hover:scale-125 transition cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg id="iconBars"
+                    class=" w-4 h-4 md:w-8 md:h-8 text-blue-600 hover:scale-125 transition cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-                <svg id="iconClose" class="w-8 h-8 text-blue-600 hidden hover:scale-110 transition cursor-pointer" xmlns="http://www.w3.org/2000/svg"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
@@ -233,37 +231,43 @@
         </div>
     </footer>
 
-    <script>
-        function toggleNavbar() {
-            const sidebar = document.getElementById("sidebar");
-            const iconBars = document.getElementById("iconBars");
-            const iconClose = document.getElementById("iconClose");
+<script>
+    function toggleNavbar() {
+        const sidebar = document.getElementById("sidebar");
 
-            const isVisible = !sidebar.classList.contains("hidden");
+        const isVisible = !sidebar.classList.contains("hidden");
 
-            if (isVisible) {
-                // Sembunyikan sidebar
-                sidebar.classList.add("opacity-0", "-translate-x-full");
-                setTimeout(() => {
-                    sidebar.classList.add("hidden");
-                }, 300); // delay untuk biar animasi selesai dulu
-
-                // Ganti ikon
-                iconBars.classList.remove("hidden");
-                iconClose.classList.add("hidden");
-            } else {
-                // Tampilkan sidebar
-                sidebar.classList.remove("hidden");
-                setTimeout(() => {
-                    sidebar.classList.remove("opacity-0", "-translate-x-full");
-                }, 10); // kecil agar animasi smooth
-
-                // Ganti ikon
-                iconBars.classList.add("hidden");
-                iconClose.classList.remove("hidden");
-            }
+        if (isVisible) {
+            // Tutup sidebar
+            sidebar.classList.add("opacity-0", "-translate-x-full");
+            setTimeout(() => {
+                sidebar.classList.add("hidden");
+            }, 300);
+            localStorage.setItem("sidebarOpen", "false");
+        } else {
+            // Buka sidebar
+            sidebar.classList.remove("hidden");
+            setTimeout(() => {
+                sidebar.classList.remove("opacity-0", "-translate-x-full");
+            }, 10);
+            localStorage.setItem("sidebarOpen", "true");
         }
-    </script>
+    }
+
+    // Saat halaman dimuat, cek localStorage dan tampilkan sidebar jika sebelumnya terbuka
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const savedState = localStorage.getItem("sidebarOpen");
+
+        if (savedState === "true") {
+            sidebar.classList.remove("hidden");
+            setTimeout(() => {
+                sidebar.classList.remove("opacity-0", "-translate-x-full");
+            }, 10);
+        }
+    });
+</script>
+
 
 
 
@@ -300,6 +304,9 @@
             });
         }
     </script>
+
+
+
 
     @if (session('login_success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
