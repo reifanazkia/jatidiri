@@ -14,29 +14,10 @@ class Program extends Model
         'cta', 'link_program', 'id_yt', 'brosur'
     ];
 
-    public function unggulans()
+    public function faciitiy()
     {
-        return $this->hasMany(Unggulan::class, 'program_id');
+        return $this->hasMany(Assesment::class, 'facility_id');
     }
 
-    public function pricing()
-    {
-        return $this->hasMany(Pricing::class, 'program_id');
-    }
-
-    public function testimony()
-    {
-        return $this->hasMany(Testimony::class, 'program_id');
-    }
-
-    public function portofolio()
-    {
-        return $this->hasMany(Portofolio::class, 'program_id');
-    }
-
-    public function slider()
-    {
-        return $this->hasMany(Slider::class, 'program_id');
-    }
 }
 

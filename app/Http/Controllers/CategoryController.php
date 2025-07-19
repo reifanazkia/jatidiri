@@ -21,6 +21,11 @@ class CategoryController extends Controller
         return view('admin.category.index', compact('categories'));
     }
 
+    public function create()
+    {
+        return view('admin.category.create');
+    }
+
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
@@ -48,6 +53,12 @@ class CategoryController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return view('admin.category.edit', compact('category'));
     }
 
     public function update(Request $request, $id)

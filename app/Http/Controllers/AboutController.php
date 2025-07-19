@@ -21,14 +21,60 @@ class AboutController extends Controller
         ]);
     }
 
-    // Tampilkan detail 1 About berdasarkan slug
+    // Tampilkan form tambah
+    public function create()
+    {
+        return view('abouts.create');
+    }
+
+    // Simpan data baru
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'content' => 'nullable|string',
+            'image1' => 'required|image|max:2048',
+            'image2' => 'nullable|image|max:2048',
+            'video' => 'nullable|mimes:mp4,webm,ogg|max:51200',
+        ]);
+
+        $data = $request->except(['image1', 'image2', 'video']);
+        $data['slug'] = $this->generateUniqueSlug(Str::slug($request->title));
+
+        if ($request->hasFile('image1')) {
+            $data['image1'] = $request->file('image1')->store('abouts', 'public');
+        }
+
+        if ($request->hasFile('image2')) {
+            $data['image2'] = $request->file('image2')->store('abouts', 'public');
+        }
+
+        if ($request->hasFile('video')) {
+            $data['video'] = $request->file('video')->store('abouts', 'public');
+        }
+
+        About::create($data);
+
+        return redirect()->route('about.index')->with('success', 'Data about berhasil ditambahkan.');
+    }
+
+    // Tampilkan form edit
+    public function edit($id)
+    {
+        $about = About::findOrFail($id);
+        return view('abouts.edit', compact('about'));
+    }
+
+    // Tampilkan detail
     public function show($slug)
     {
         $about = About::where('slug', $slug)->firstOrFail();
         return view('abouts.show', compact('about'));
     }
 
-    // Perbarui data About
+    // Perbarui data
     public function update(Request $request, $id)
     {
         $about = About::findOrFail($id);
@@ -76,7 +122,7 @@ class AboutController extends Controller
         return redirect()->route('about.index')->with('success', 'Data about berhasil diperbarui.');
     }
 
-    // Hapus data About
+    // Hapus data
     public function destroy($id)
     {
         $about = About::findOrFail($id);
