@@ -23,6 +23,11 @@ class AgendaController extends Controller
         return view('admin.agenda.index', compact('agendas'));
     }
 
+    public function create()
+    {
+        return view('admin.agenda.create');
+    }
+
     // Simpan agenda baru
     public function store(Request $request)
     {
@@ -60,6 +65,12 @@ class AgendaController extends Controller
     {
         $agenda = Agenda::where('slug', $slug)->firstOrFail();
         return view('admin.agenda.show', compact('agenda'));
+    }
+
+    public function edit($id)
+    {
+        $agenda = Agenda::findOrFail($id);
+        return view('admin.agenda.edit', compact('agenda'));
     }
 
     public function update(Request $request, $id)

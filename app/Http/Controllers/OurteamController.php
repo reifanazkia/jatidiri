@@ -15,6 +15,12 @@ class OurteamController extends Controller
         return view('admin.ourteam.index', compact('data'));
     }
 
+    public function create()
+    {
+        $categories = OurteamCategory::all();
+        return view('admin.ourteam.create', compact('categories'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -43,6 +49,13 @@ class OurteamController extends Controller
     {
         $item = Ourteam::with('category')->findOrFail($id);
         return view('admin.ourteam.show', compact('item'));
+    }
+
+    public function edit($id)
+    {
+        $team = Ourteam::findOrFail($id);
+        $categories = OurteamCategory::all();
+        return view('admin.ourteam.edit', compact('team', 'categories'));
     }
 
     public function update(Request $request, $id)

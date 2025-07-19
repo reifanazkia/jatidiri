@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AssesmentController;
 use App\Http\Controllers\DukunganController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MisiController;
@@ -24,6 +25,8 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SidebennerController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\WhyController;
+use App\Http\Controllers\BenefitsController;
+use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -52,7 +55,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('posts')->name('posts.')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::get('/create', [PostController::class, 'create'])->name('create');
         Route::post('/store', [PostController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PostController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [PostController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [PostController::class, 'destroy'])->name('destroy');
         Route::get('/show/{slug}', [PostController::class, 'show'])->name('show');
@@ -62,16 +67,21 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('category')->name('category.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::post('/store', [CategoryController::class, 'store'])->name('store');
-        Route::put('/update/{id}', [CategoryController::class, 'update'])->name('update');
-        Route::delete('/destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
-        Route::get('/show/{slug}', [CategoryController::class, 'show'])->name('show');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{slug}', [CategoryController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [CategoryController::class, 'upload'])->name('upload');
     });
 
-    Route::prefix('agenda')->name('agenda')->group(function () {
+
+    Route::prefix('agenda')->name('agenda.')->group(function () {
         Route::get('/', [AgendaController::class, 'index'])->name('index');
+        Route::get('/create', [AgendaController::class, 'create'])->name('create');
         Route::post('/store', [AgendaController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AgendaController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [AgendaController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [AgendaController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [AgendaController::class, 'upload'])->name('upload');
@@ -138,21 +148,29 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/bulk-delete', [PricingController::class, 'bulkDelete'])->name('bulk-delete');
     });
 
+
+
     Route::prefix('dukungan')->name('dukungan.')->group(function () {
-        Route::get('/store', [DukunganController::class, 'index'])->name('index');
+        Route::get('/', [DukunganController::class, 'index'])->name('index');
+        Route::get('/create', [DukunganController::class, 'create'])->name('create');
         Route::post('/store', [DukunganController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [DukunganController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [DukunganController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [DukunganController::class, 'destroy'])->name('destroy');
         Route::get('/show/{slug}', [DukunganController::class, 'show'])->name('show');
-        Route::put('/update/{id}', [DukunganController::class, 'update'])->name('update');
-        Route::delete('/destroy/{id}', [DukunganController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete', [DukunganController::class, 'bulkDelete'])->name('bulk-delete');
         Route::post('/upload', [DukunganController::class, 'upload'])->name('upload');
-        Route::delete('/bulk-delete', [DukunganController::class, 'bulkDelete'])->name('bulk-delete');
     });
+
 
     Route::prefix('about')->name('about.')->group(function () {
         Route::get('/', [AboutController::class, 'index'])->name('index');
-        Route::get('/{slug}', [AboutController::class, 'show'])->name('show');
-        Route::put('/{id}', [AboutController::class, 'update'])->name('update');
-        Route::delete('/{id}', [AboutController::class, 'destroy'])->name('destroy');
+        Route::get('/create', [AboutController::class, 'create'])->name('create');
+        Route::post('/store', [AboutController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AboutController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [AboutController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [AboutController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [AboutController::class, 'show'])->name('show');
     });
 
 
@@ -170,7 +188,10 @@ Route::middleware(['auth'])->group(function () {
     // LEGAL
     Route::prefix('legal')->name('legal.')->group(function () {
         Route::get('/', [LegalController::class, 'index'])->name('index');
+        Route::get('/create', [LegalController::class, 'create'])->name('create');
+        Route::post('/', [LegalController::class, 'store'])->name('store');
         Route::get('/{id}', [LegalController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [LegalController::class, 'edit'])->name('edit');
         Route::put('/{id}', [LegalController::class, 'update'])->name('update');
         Route::delete('/{id}', [LegalController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [LegalController::class, 'upload'])->name('upload');
@@ -244,5 +265,30 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', [WhyController::class, 'update'])->name('update');
         Route::delete('/{id}', [WhyController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [WhyController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('assesment')->name('assesment.')->group(function () {
+        Route::get('/', [AssesmentController::class, 'index'])->name('index');
+        Route::get('/create', [AssesmentController::class, 'create'])->name('create');
+        Route::post('/', [AssesmentController::class, 'store'])->name('store');
+        Route::get('/{slug}', [AssesmentController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AssesmentController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AssesmentController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AssesmentController::class, 'destroy'])->name('destroy');
+        Route::post('/upload', [AssesmentController::class, 'upload'])->name('upload');
+        Route::delete('/bulk-delete', [AssesmentController::class, 'bulkDelete'])->name('bulk-delete');
+    });
+
+
+
+    Route::prefix('benefits')->name('benefits.')->group(function () {
+        Route::get('/', [BenefitsController::class, 'index'])->name('index');
+        Route::get('/create', [BenefitsController::class, 'create'])->name('create');
+        Route::post('/store', [BenefitsController::class, 'store'])->name('store');
+        Route::get('/{slug}', [BenefitsController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [BenefitsController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [BenefitsController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [BenefitsController::class, 'destroy'])->name('destroy');
+        Route::post('/upload', [BenefitsController::class, 'upload'])->name('upload');
     });
 });
