@@ -1,6 +1,8 @@
  <?php
 
 use App\Http\Controllers\Api\ApiAgendaController;
+use App\Http\Controllers\Api\ApiAssesmentController;
+use App\Http\Controllers\Api\ApiBenefitsController;
 use App\Http\Controllers\Api\ApiChatController;
 use App\Http\Controllers\Api\ApiDukunganController;
 use App\Http\Controllers\Api\ApiGanalyticsController;
@@ -50,6 +52,10 @@ Route::get('/service', [ApiServiceController::class, 'index']);
 Route::get('/service/{slug}', [ApiServiceController::class, 'show']);
 Route::get('/why', [ApiWhyController::class, 'index']);
 Route::get('/why/{slug}', [ApiWhyController::class, 'show']);
+Route::get('/assesment', [ApiAssesmentController::class, 'index']);
+Route::get('/assesment/{slug}', [ApiAssesmentController::class, 'show']);
+Route::get('/benefits', [ApiBenefitsController::class, 'index']);
+Route::get('/benefits/{slug}', [ApiBenefitsController::class, 'show']);
 
 
 

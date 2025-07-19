@@ -14,7 +14,7 @@ class DukunganController extends Controller
      */
     public function index(Request $request)
     {
-        $query =Dukungan::query();
+        $query = Dukungan::query();
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')
@@ -25,8 +25,17 @@ class DukunganController extends Controller
         return view('dukungan.index', compact('data'));
     }
 
+    
     /**
      * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('dukungan.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
@@ -36,17 +45,16 @@ class DukunganController extends Controller
             'jabatan' => 'required|string|max:255',
             'id_yt' => 'nullable|string|max:255',
             'image' => 'required|image|max:755'
-
         ]);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('dukungan', 'public');
         }
 
-          $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
+        $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
 
-          Dukungan::create($data);
-          return back()->with('success', 'Data Berhasil Di Tambahkan');
+        Dukungan::create($data);
+        return back()->with('success', 'Data Berhasil Di Tambahkan');
     }
 
     /**
@@ -61,6 +69,15 @@ class DukunganController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    public function edit(string $id)
+    {
+        $data = Dukungan::findOrFail($id);
+        return view('dukungan.edit', compact('data'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, string $id)
     {
         $dukungan = Dukungan::findOrFail($id);
@@ -70,8 +87,7 @@ class DukunganController extends Controller
             'name' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'id_yt' => 'nullable|string|max:255',
-            'image' => 'required|image|max:755'
-
+            'image' => 'nullable|image|max:755'
         ]);
 
         if ($request->hasFile('image')) {
@@ -80,10 +96,10 @@ class DukunganController extends Controller
             }
 
             $data['image'] = $request->file('image')->store('dukungan', 'public');
-
         }
 
-        $dukungan->update('$data');
+        $dukungan->update($data);
+
         return back()->with('success', 'Data Berhasil Di Perbarui');
     }
 
@@ -97,9 +113,13 @@ class DukunganController extends Controller
         if ($dukungan->image && Storage::disk('public')->exists($dukungan->image)) {
             Storage::disk('public')->delete($dukungan->image);
         }
+
+        $dukungan->delete();
+
+        return back()->with('success', 'Data Berhasil Dihapus');
     }
 
-     protected function generateUniqueSlug($slug, $ignoreId = null)
+    protected function generateUniqueSlug($slug, $ignoreId = null)
     {
         $uniqueSlug = $slug;
         $i = 1;
@@ -121,13 +141,13 @@ class DukunganController extends Controller
 
         foreach ($dukungan as $item) {
             if ($item->image && Storage::disk('public')->exists($item->image)) {
-                Storage::disk('public')->delete($item->imgae);
+                Storage::disk('public')->delete($item->image);
             }
 
             $item->delete();
         }
 
-        return response()->json(['message', 'Data Dukungan Berhasil Di Hapus']);
+        return response()->json(['message' => 'Data Dukungan Berhasil Dihapus']);
     }
 
     public function upload(Request $request)
@@ -136,11 +156,12 @@ class DukunganController extends Controller
             $file = $request->file('upload');
             $filename = time() . '-' . $file->getClientOriginalName();
             $path = $file->storeAs('dukungan', $filename, 'public');
+
+            return response()->json([
+                'url' => asset('storage/' . $path)
+            ]);
         }
 
-        return response()->json([
-            'url' => asset('storage/' . $path)
-        ]);
-
+        return response()->json(['error' => 'No file uploaded.'], 400);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -24,7 +25,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->latest()->paginate(10);
+        $posts = $query->latest()->paginate(3);
         return view('posts.index', compact('posts'));
     }
 
@@ -32,6 +33,12 @@ class PostController extends Controller
     {
         $post = Post::with('category', 'author')->where('slug', $slug)->firstOrFail();
         return view('posts.index', compact('post'));
+    }
+
+    public function create()
+    {
+        $categories = Category::all();
+        return view('posts.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -55,6 +62,13 @@ class PostController extends Controller
         Post::create($validated);
 
         return redirect()->route('posts.index')->with('success', 'Post berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $post = Post::findOrFail($id);
+        $categories = Category::all();
+        return view('posts.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, $id)

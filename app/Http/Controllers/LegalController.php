@@ -19,6 +19,11 @@ class LegalController extends Controller
         return view('legal.index', compact('legals'));
     }
 
+    public function create()
+    {
+        return view('legal.create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -43,6 +48,12 @@ class LegalController extends Controller
         $legals = Legal::findOrFail($id);
 
         return view('legal.index', compact('legals'));
+    }
+
+    public function edit($id)
+    {
+        $legals = Legal::findOrFail($id);
+        return view('legal.edit', compact('legals'));
     }
 
     public function update(Request $request, $id)
@@ -87,7 +98,7 @@ class LegalController extends Controller
         return back()->with('success', 'Data Berhasil Di Hapus');
     }
 
-     public function upload(Request $request)
+    public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
