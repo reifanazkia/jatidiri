@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ $title ?? 'Dashboard' }}</title>
-    <link href="./css/output.css" rel="stylesheet" />
+    <link href="{{ asset('css/output.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -33,36 +35,59 @@
 
 
             <!-- Logo -->
-            <img src="./img/Jatidiri.png" alt="Logo" class="w-[69px] h-[28px] md:w-[138px] md:h-[57px]" />
+            <img src="{{ asset('img/Jatidiri.png') }}" alt="Logo"
+                class="w-[69px] h-[28px] md:w-[138px] md:h-[57px]" />
 
             <!-- Garis Vertikal -->
             <div class="w-px h-10 md:h-20 border border-gray-500"></div>
 
             <!-- Home Text -->
-            <span class="text-[20px] font-semibold text-gray-800">Home</span>
+            <span class="text-[20px] font-semibold text-gray-800">@yield('page_title', 'Home')
+            </span>
         </div>
 
-        <!-- Kanan: Avatar dan Info User -->
-        <div
-            class="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full shadow hover:scale-105 transition duration-300">
-            <!-- Avatar -->
-            <img src="https://i.pravatar.cc/40?img=3" alt="User" class="w-10 h-10 rounded-full" />
+        <!-- Kanan: Avatar, Info, dan Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <!-- Trigger -->
+            <button @click="open = !open"
+                class="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full shadow hover:scale-105 transition duration-300">
+                <!-- Avatar -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd"
+                        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                        clip-rule="evenodd" />
+                </svg>
 
-            <!-- Info user -->
-            <div class="flex flex-col justify-center">
-                <span class="font-semibold text-[16px] leading-tight">Aelxander</span>
-                <span class="text-[14px] text-gray-500 leading-tight">Admin</span>
-            </div>
 
-            <!-- Logout Button -->
-            <button onclick="confirmLogout()" title="Logout">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    stroke-width="2" class="w-6 h-6 text-red-600 cursor-pointer">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                <!-- Info user -->
+                <div class="flex flex-col justify-center text-left">
+                    <span class="font-semibold text-[16px] leading-tight">{{ Auth::user()->name ?? 'Aelxander' }}</span>
+                    <span
+                        class="text-[14px] text-gray-500 leading-tight capitalize">{{ Auth::user()->role ?? 'Admin' }}</span>
+                </div>
+
+                <!-- Arrow Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                        clip-rule="evenodd" />
                 </svg>
             </button>
+
+            <!-- Dropdown -->
+            <div x-show="open" @click.away="open = false" x-transition
+                class="absolute right-0 z-50 mt-2 w-44 bg-white rounded-lg shadow-lg py-2" x-cloak>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100">Logout</button>
+                </form>
+            </div>
         </div>
+
     </div>
 
 
@@ -220,59 +245,88 @@
             <!-- Konten Putih -->
             <div class="bg-[#D7D7FE] p-1 rounded-xl">
                 @yield('content')
+                @yield('script')
             </div>
 
     </div>
     </main>
     </div>
-    <footer class="bg-white w-full shadow-md py-4 mt-3">
-        <div class="text-center text-gray-500 text-sm">
-            &copy; {{ date('2012-2025 ') }} Jatidiri.app
-        </div>
-    </footer>
+    
+    <script>
+        function toggleNavbar() {
+            const sidebar = document.getElementById("sidebar");
 
-<script>
-    function toggleNavbar() {
-        const sidebar = document.getElementById("sidebar");
+            const isVisible = !sidebar.classList.contains("hidden");
 
-        const isVisible = !sidebar.classList.contains("hidden");
-
-        if (isVisible) {
-            // Tutup sidebar
-            sidebar.classList.add("opacity-0", "-translate-x-full");
-            setTimeout(() => {
-                sidebar.classList.add("hidden");
-            }, 300);
-            localStorage.setItem("sidebarOpen", "false");
-        } else {
-            // Buka sidebar
-            sidebar.classList.remove("hidden");
-            setTimeout(() => {
-                sidebar.classList.remove("opacity-0", "-translate-x-full");
-            }, 10);
-            localStorage.setItem("sidebarOpen", "true");
+            if (isVisible) {
+                // Tutup sidebar
+                sidebar.classList.add("opacity-0", "-translate-x-full");
+                setTimeout(() => {
+                    sidebar.classList.add("hidden");
+                }, 300);
+                localStorage.setItem("sidebarOpen", "false");
+            } else {
+                // Buka sidebar
+                sidebar.classList.remove("hidden");
+                setTimeout(() => {
+                    sidebar.classList.remove("opacity-0", "-translate-x-full");
+                }, 10);
+                localStorage.setItem("sidebarOpen", "true");
+            }
         }
-    }
 
-    // Saat halaman dimuat, cek localStorage dan tampilkan sidebar jika sebelumnya terbuka
-    document.addEventListener("DOMContentLoaded", function () {
-        const sidebar = document.getElementById("sidebar");
-        const savedState = localStorage.getItem("sidebarOpen");
+        // Saat halaman dimuat, cek localStorage dan tampilkan sidebar jika sebelumnya terbuka
+    </script>
 
-        if (savedState === "true") {
-            sidebar.classList.remove("hidden");
-            setTimeout(() => {
-                sidebar.classList.remove("opacity-0", "-translate-x-full");
-            }, 10);
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("sidebar");
+            const isCreatePage = "{{ Route::currentRouteName() }}" === "posts.create";
+
+            if (isCreatePage) {
+                // Paksa sidebar tertutup saat masuk halaman create
+                sidebar.classList.add("hidden", "opacity-0", "-translate-x-full");
+                localStorage.setItem("sidebarOpen", "false");
+            } else {
+                const savedState = localStorage.getItem("sidebarOpen");
+                
+                if (savedState === "true") {
+                    sidebar.classList.remove("hidden");
+                    setTimeout(() => {
+                        sidebar.classList.remove("opacity-0", "-translate-x-full");
+                    }, 10);
+                }
+            }
+        });
+
+        function toggleNavbar() {
+            const sidebar = document.getElementById("sidebar");
+            const isHidden = sidebar.classList.contains("hidden");
+
+            if (!isHidden) {
+                // Tutup sidebar
+                sidebar.classList.add("opacity-0", "-translate-x-full");
+                setTimeout(() => {
+                    sidebar.classList.add("hidden");
+                }, 300);
+                localStorage.setItem("sidebarOpen", "false");
+            } else {
+                // Buka sidebar
+                sidebar.classList.remove("hidden");
+                setTimeout(() => {
+                    sidebar.classList.remove("opacity-0", "-translate-x-full");
+                }, 10);
+                localStorage.setItem("sidebarOpen", "true");
+            }
         }
-    });
-</script>
+    </script>
 
 
 
 
 
-    <!-- SweetAlert2 CDN -->
+
+<!-- SweetAlert2 CDN -->
 
     <script>
         function confirmLogout() {
@@ -319,7 +373,12 @@
             });
         </script>
     @endif
-
+    
+    <footer class="bg-white w-full shadow-md py-4 mt-3">
+        <div class="text-center text-gray-500 text-sm">
+            &copy; {{ date('2012-2025 ') }} Jatidiri.app
+        </div>
+    </footer>
 
 
 </body>
