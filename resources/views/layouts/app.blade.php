@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ $title ?? 'Dashboard' }}</title>
-    <link href="./css/output.css" rel="stylesheet" />
+    <link href="{{ asset('css/output.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
 
@@ -35,7 +35,8 @@
 
 
             <!-- Logo -->
-            <img src="./img/Jatidiri.png" alt="Logo" class="w-[69px] h-[28px] md:w-[138px] md:h-[57px]" />
+            <img src="{{ asset('img/Jatidiri.png') }}" alt="Logo"
+                class="w-[69px] h-[28px] md:w-[138px] md:h-[57px]" />
 
             <!-- Garis Vertikal -->
             <div class="w-px h-10 md:h-20 border border-gray-500"></div>
@@ -244,17 +245,13 @@
             <!-- Konten Putih -->
             <div class="bg-[#D7D7FE] p-1 rounded-xl">
                 @yield('content')
+                @yield('script')
             </div>
 
     </div>
     </main>
     </div>
-    <footer class="bg-white w-full shadow-md py-4 mt-3">
-        <div class="text-center text-gray-500 text-sm">
-            &copy; {{ date('2012-2025 ') }} Jatidiri.app
-        </div>
-    </footer>
-
+    
     <script>
         function toggleNavbar() {
             const sidebar = document.getElementById("sidebar");
@@ -279,24 +276,57 @@
         }
 
         // Saat halaman dimuat, cek localStorage dan tampilkan sidebar jika sebelumnya terbuka
+    </script>
+
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const sidebar = document.getElementById("sidebar");
-            const savedState = localStorage.getItem("sidebarOpen");
+            const isCreatePage = "{{ Route::currentRouteName() }}" === "posts.create";
 
-            if (savedState === "true") {
+            if (isCreatePage) {
+                // Paksa sidebar tertutup saat masuk halaman create
+                sidebar.classList.add("hidden", "opacity-0", "-translate-x-full");
+                localStorage.setItem("sidebarOpen", "false");
+            } else {
+                const savedState = localStorage.getItem("sidebarOpen");
+                
+                if (savedState === "true") {
+                    sidebar.classList.remove("hidden");
+                    setTimeout(() => {
+                        sidebar.classList.remove("opacity-0", "-translate-x-full");
+                    }, 10);
+                }
+            }
+        });
+
+        function toggleNavbar() {
+            const sidebar = document.getElementById("sidebar");
+            const isHidden = sidebar.classList.contains("hidden");
+
+            if (!isHidden) {
+                // Tutup sidebar
+                sidebar.classList.add("opacity-0", "-translate-x-full");
+                setTimeout(() => {
+                    sidebar.classList.add("hidden");
+                }, 300);
+                localStorage.setItem("sidebarOpen", "false");
+            } else {
+                // Buka sidebar
                 sidebar.classList.remove("hidden");
                 setTimeout(() => {
                     sidebar.classList.remove("opacity-0", "-translate-x-full");
                 }, 10);
+                localStorage.setItem("sidebarOpen", "true");
             }
-        });
+        }
     </script>
 
 
 
 
 
-    <!-- SweetAlert2 CDN -->
+
+<!-- SweetAlert2 CDN -->
 
     <script>
         function confirmLogout() {
@@ -343,7 +373,12 @@
             });
         </script>
     @endif
-
+    
+    <footer class="bg-white w-full shadow-md py-4 mt-3">
+        <div class="text-center text-gray-500 text-sm">
+            &copy; {{ date('2012-2025 ') }} Jatidiri.app
+        </div>
+    </footer>
 
 
 </body>

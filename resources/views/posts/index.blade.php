@@ -5,22 +5,28 @@
 
 
 @section('content')
-    <div class="container p-6 bg-white">
+    <div class="container p-2 bg-white rounded-">
         {{-- Header Action (Add Post & Categories) --}}
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div class="flex gap-4 items-center">
                 {{-- Add Post --}}
                 <div
-                    class=" bg-blue-500 rounded-full w-[150px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
-                    <div class="px-4 py-4 bg-white rounded-full">
+                    class="bg-blue-500 rounded-full w-[150px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
+                    {{-- Icon Section --}}
+                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
+                            stroke="currentColor" class="w-5 h-5 text-blue-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                         </svg>
                     </div>
-                    <p class="text-[15px] text-white px-4">Add Post</p>
+
+                    {{-- Text Section --}}
+                    <a href="{{ route('posts.create') }}" class="text-sm font-semibold text-white px-3">
+                        Add Post
+                    </a>
                 </div>
+
 
                 {{-- Categories --}}
                 <div
@@ -137,7 +143,39 @@
                 </div>
             @endforeach
         </div>
+        <!-- Paginasi -->
+        <div class="flex justify-center mt-10 space-x-2">
+            {{-- Tombol Previous --}}
+            @php
+                $start = max($posts->currentPage() - 1, 1);
+                $end = min($posts->currentPage() + 1, $posts->lastPage());
+            @endphp
 
+            {{-- Tombol Previous --}}
+            @if ($posts->onFirstPage())
+                <span class="px-3 py-1 text-gray-400 cursor-not-allowed">« Previous</span>
+            @else
+                <a href="{{ $posts->previousPageUrl() }}" class="px-3 py-1 text-purple-600 hover:underline">« Previous</a>
+            @endif
+
+            {{-- Angka halaman --}}
+            @for ($i = $start; $i <= $end; $i++)
+                @if ($i == $posts->currentPage())
+                    <span class="px-3 py-1 bg-purple-500 text-purple-600 rounded shadow ">{{ $i }}</span>
+                @else
+                    <a href="{{ $posts->url($i) }}"
+                        class="px-3 py-1 border border-purple-500 text-purple-600 rounded hover:bg-purple-700">{{ $i }}</a>
+                @endif
+            @endfor
+
+            {{-- Tombol Next --}}
+            @if ($posts->hasMorePages())
+                <a href="{{ $posts->nextPageUrl() }}" class="px-3 py-1 text-purple-600 hover:underline">Next »</a>
+            @else
+                <span class="px-3 py-1 text-gray-400 cursor-not-allowed">Next »</span>
+            @endif
+
+        </div>
     </div>
 
     <script>
