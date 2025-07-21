@@ -23,6 +23,12 @@ class PartnerController extends Controller
         return view('partners.index', compact('partners'));
     }
 
+    // Form untuk membuat partner baru
+    public function create()
+    {
+        return view('partners.create');
+    }
+
     // Simpan data partner
     public function store(Request $request)
     {
@@ -52,6 +58,13 @@ class PartnerController extends Controller
     {
         $partner = Partner::where('slug', $slug)->firstOrFail();
         return view('partners.index', compact('partner'));
+    }
+
+    // Form untuk mengedit partner
+    public function edit($id)
+    {
+        $partner = Partner::findOrFail($id);
+        return view('partners.edit', compact('partner'));
     }
 
     // Update partner

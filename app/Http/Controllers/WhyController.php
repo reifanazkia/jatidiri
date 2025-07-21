@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Why;
+use App\Models\Service;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -22,17 +23,17 @@ class WhyController extends Controller
         return view('why_service.index', compact('why'));
     }
 
-    public function show($slug)
+    public function create()
     {
-        $why = Why::where('slug', $slug)->firstOrFail();
-        return view('why_service.show', compact('why'));
+        $services = Service::all();
+        return view('why_service.create', compact('services'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|max:255',
-            'required|exists:ourteam_categories,id',
+            'service_id' => 'required|exists:services,id',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
@@ -48,6 +49,19 @@ class WhyController extends Controller
         Why::create($data);
 
         return redirect()->route('why.index')->with('success', 'Data berhasil ditambahkan.');
+    }
+
+    public function show($slug)
+    {
+        $why = Why::where('slug', $slug)->firstOrFail();
+        return view('why_service.show', compact('why'));
+    }
+
+    public function edit($id)
+    {
+        $why = Why::findOrFail($id);
+        $services = Service::all();
+        return view('why_service.edit', compact('why', 'services'));
     }
 
     public function update(Request $request, $id)
@@ -116,4 +130,3 @@ class WhyController extends Controller
         return $uniqueSlug;
     }
 }
-
