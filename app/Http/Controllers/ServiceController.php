@@ -21,22 +21,27 @@ class ServiceController extends Controller
         return view('service.index', compact('services'));
     }
 
+    public function create()
+    {
+        return view('service.create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
-            'title1' => 'nullable|string|max:255',
+            'name'         => 'required|max:255',
+            'title1'       => 'nullable|string|max:255',
             'description1' => 'nullable|string',
-            'image1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title2' => 'nullable|string|max:255',
+            'image1'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title2'       => 'nullable|string|max:255',
             'description2' => 'nullable|string',
-            'image2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title3' => 'nullable|string|max:255',
+            'image2'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title3'       => 'nullable|string|max:255',
             'description3' => 'nullable|string',
-            'image3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title4' => 'nullable|string|max:255',
+            'image3'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title4'       => 'nullable|string|max:255',
             'description4' => 'nullable|string',
-            'image4' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image4'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->except(['image1', 'image2', 'image3', 'image4']);
@@ -59,24 +64,30 @@ class ServiceController extends Controller
         return view('service.show', compact('service'));
     }
 
+    public function edit($id)
+    {
+        $service = Service::findOrFail($id);
+        return view('service.edit', compact('service'));
+    }
+
     public function update(Request $request, $id)
     {
         $service = Service::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|max:255',
-            'title1' => 'nullable|string|max:255',
+            'name'         => 'required|max:255',
+            'title1'       => 'nullable|string|max:255',
             'description1' => 'nullable|string',
-            'image1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title2' => 'nullable|string|max:255',
+            'image1'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title2'       => 'nullable|string|max:255',
             'description2' => 'nullable|string',
-            'image2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title3' => 'nullable|string|max:255',
+            'image2'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title3'       => 'nullable|string|max:255',
             'description3' => 'nullable|string',
-            'image3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'title4' => 'nullable|string|max:255',
+            'image3'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'title4'       => 'nullable|string|max:255',
             'description4' => 'nullable|string',
-            'image4' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image4'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->except(['image1', 'image2', 'image3', 'image4', 'slug']);
@@ -131,9 +142,11 @@ class ServiceController extends Controller
     {
         $uniqueSlug = $slug;
         $i = 1;
+
         while (Service::where('slug', $uniqueSlug)->exists()) {
             $uniqueSlug = $slug . '-' . $i++;
         }
+
         return $uniqueSlug;
     }
 }

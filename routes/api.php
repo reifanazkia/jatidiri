@@ -1,11 +1,14 @@
  <?php
 
 use App\Http\Controllers\Api\ApiAgendaController;
+use App\Http\Controllers\Api\ApiAlasanController;
 use App\Http\Controllers\Api\ApiAssesmentController;
 use App\Http\Controllers\Api\ApiBenefitsController;
 use App\Http\Controllers\Api\ApiChatController;
 use App\Http\Controllers\Api\ApiDukunganController;
 use App\Http\Controllers\Api\ApiGanalyticsController;
+use App\Http\Controllers\Api\ApiHowController;
+use App\Http\Controllers\Api\ApiIdentityController;
 use App\Http\Controllers\Api\ApiLegalController;
 use App\Http\Controllers\Api\ApiOurteamController;
 use App\Http\Controllers\Api\ApiPartnerController;
@@ -44,6 +47,7 @@ Route::get('/legal', [ApiLegalController::class, 'index']);
 Route::get('/legal/{id}', [ApiLegalController::class, 'show']);
 Route::get('/partner', [ApiPartnerController::class, 'index']);
 Route::get('/partner/{id}', [ApiPartnerController::class, 'show']);
+Route::get('/identity', [ApiIdentityController::class, 'index']);
 Route::get('/slider', [ApiSliderController::class, 'index']);
 Route::get('/pixel', [ApiPixelsController::class, 'index']);
 Route::get('/google-analytics', [ApiGanalyticsController::class, 'index']);
@@ -56,6 +60,10 @@ Route::get('/assesment', [ApiAssesmentController::class, 'index']);
 Route::get('/assesment/{slug}', [ApiAssesmentController::class, 'show']);
 Route::get('/benefits', [ApiBenefitsController::class, 'index']);
 Route::get('/benefits/{slug}', [ApiBenefitsController::class, 'show']);
+Route::get('/alasan', [ApiAlasanController::class, 'index']);
+Route::get('/alasan/{slug}', [ApiAlasanController::class, 'show']);
+Route::get('/hows', [ApiHowController::class, 'index']);
+Route::get('/hows/{slug}', [ApiHowController::class, 'show']);
 
 
 

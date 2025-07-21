@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AlasanController;
+use App\Http\Controllers\AlasanServiceController;
 use App\Http\Controllers\AssesmentController;
 use App\Http\Controllers\DukunganController;
 use App\Http\Controllers\LegalController;
@@ -26,6 +28,7 @@ use App\Http\Controllers\SidebennerController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\WhyController;
 use App\Http\Controllers\BenefitsController;
+use App\Http\Controllers\HowController;
 use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Auth;
 
@@ -200,7 +203,10 @@ Route::middleware(['auth'])->group(function () {
     // PARTNER
     Route::prefix('patner')->name('patner.')->group(function () {
         Route::get('/', [PartnerController::class, 'index'])->name('index');
+        Route::get('/create', [PartnerController::class, 'create'])->name('create');
+        Route::post('/', [PartnerController::class, 'store'])->name('store');
         Route::get('/{slug}', [PartnerController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [PartnerController::class, 'edit'])->name('edit');
         Route::put('/{id}', [PartnerController::class, 'update'])->name('update');
         Route::delete('/{id}', [PartnerController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [PartnerController::class, 'upload'])->name('upload');
@@ -225,7 +231,10 @@ Route::middleware(['auth'])->group(function () {
     // SLIDER
     Route::prefix('slider')->name('slider.')->group(function () {
         Route::get('/', [SliderController::class, 'index'])->name('index');
+        Route::get('/create', [SliderController::class, 'create'])->name('create');
+        Route::post('/', [SliderController::class, 'store'])->name('store');
         Route::get('/{id}', [SliderController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [SliderController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SliderController::class, 'update'])->name('update');
         Route::delete('/{id}', [SliderController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [SliderController::class, 'upload'])->name('upload');
@@ -234,7 +243,10 @@ Route::middleware(['auth'])->group(function () {
     // SERVICE
     Route::prefix('service')->name('service.')->group(function () {
         Route::get('/', [ServiceController::class, 'index'])->name('index');
+        Route::get('/create', [ServiceController::class, 'create'])->name('create');
+        Route::post('/', [ServiceController::class, 'store'])->name('store');
         Route::get('/{slug}', [ServiceController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
         Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [ServiceController::class, 'upload'])->name('upload');
@@ -261,7 +273,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('why')->name('why.')->group(function () {
         Route::get('/', [WhyController::class, 'index'])->name('index');
+        Route::get('/create', [WhyController::class, 'create'])->name('create');
+        Route::post('/', [WhyController::class, 'store'])->name('store');
         Route::get('/{slug}', [WhyController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AssesmentController::class, 'edit'])->name('edit');
         Route::put('/{id}', [WhyController::class, 'update'])->name('update');
         Route::delete('/{id}', [WhyController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [WhyController::class, 'upload'])->name('upload');
@@ -290,5 +305,29 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [BenefitsController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [BenefitsController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [BenefitsController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('alasan')->name('alasan.')->group(function () {
+        Route::get('/', [AlasanController::class, 'index'])->name('index');
+        Route::get('/create', [AlasanController::class, 'create'])->name('create');
+        Route::post('/store', [AlasanController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AlasanController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [AlasanController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [AlasanController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [AlasanController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [AlasanController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [AlasanController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('how')->name('how.')->group(function () {
+        Route::get('/', [HowController::class, 'index'])->name('index');
+        Route::get('/create', [HowController::class, 'create'])->name('create');
+        Route::post('/store', [HowController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [HowController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [HowController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [HowController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [HowController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [HowController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [HowController::class, 'upload'])->name('upload');
     });
 });

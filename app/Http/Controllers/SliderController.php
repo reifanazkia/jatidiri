@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class SliderController extends Controller
 {
+    // Tampilkan semua slider
     public function index(Request $request)
     {
         $query = Slider::query();
@@ -23,6 +24,13 @@ class SliderController extends Controller
         return view('slider.index', compact('sliders'));
     }
 
+    // Form tambah slider
+    public function create()
+    {
+        return view('slider.create');
+    }
+
+    // Simpan slider baru
     public function store(Request $request)
     {
         $request->validate([
@@ -50,12 +58,21 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slider berhasil ditambahkan.');
     }
 
+    // Tampilkan detail berdasarkan slug
     public function show($slug)
     {
         $slider = Slider::where('slug', $slug)->firstOrFail();
         return view('slider.show', compact('slider'));
     }
 
+    // Form edit slider
+    public function edit($id)
+    {
+        $slider = Slider::findOrFail($id);
+        return view('slider.edit', compact('slider'));
+    }
+
+    // Update slider
     public function update(Request $request, $id)
     {
         $slider = Slider::findOrFail($id);
@@ -91,6 +108,7 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slider berhasil diperbarui.');
     }
 
+    // Hapus slider
     public function destroy($id)
     {
         $slider = Slider::findOrFail($id);
@@ -104,6 +122,7 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slider berhasil dihapus.');
     }
 
+    // Upload gambar via CKEditor
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {
@@ -117,13 +136,16 @@ class SliderController extends Controller
         }
     }
 
+    // Buat slug unik
     protected function generateUniqueSlug($slug)
     {
         $uniqueSlug = $slug;
         $i = 1;
+
         while (Slider::where('slug', $uniqueSlug)->exists()) {
             $uniqueSlug = $slug . '-' . $i++;
         }
+
         return $uniqueSlug;
     }
 }
