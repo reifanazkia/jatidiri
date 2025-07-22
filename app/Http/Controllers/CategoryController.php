@@ -18,18 +18,18 @@ class CategoryController extends Controller
         }
 
         $categories = $query->latest()->get();
-        return view('admin.category.index', compact('categories'));
+        return view('category.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.category.create');
+        return view('category.create');
     }
 
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
-        return view('admin.category.show', compact('category'));
+        return view('category.show', compact('category'));
     }
 
     public function store(Request $request)
@@ -58,7 +58,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = Category::findOrFail($id);
-        return view('admin.category.edit', compact('category'));
+        return view('category.edit', compact('category'));
     }
 
     public function update(Request $request, $id)

@@ -84,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit/{id}', [AgendaController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [AgendaController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [AgendaController::class, 'destroy'])->name('destroy');
+        Route::delete('/bulk-delete', [ProgramController::class, 'bulkDelete'])->name('bulkDelete');
         Route::post('/upload', [AgendaController::class, 'upload'])->name('upload');
         Route::get('/show/{slug}', [AgendaController::class, 'show'])->name('show');
     });

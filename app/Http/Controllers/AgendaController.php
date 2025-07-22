@@ -20,12 +20,12 @@ class AgendaController extends Controller
 
         $agendas = $query->latest()->get();
 
-        return view('admin.agenda.index', compact('agendas'));
+        return view('agenda.index', compact('agendas'));
     }
 
     public function create()
     {
-        return view('admin.agenda.create');
+        return view('agenda.create');
     }
 
     // Simpan agenda baru
@@ -128,6 +128,23 @@ class AgendaController extends Controller
 
         return redirect()->route('agenda.index')->with('success', 'Agenda dan gambarnya berhasil dihapus.');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+
+        $agendas = Agenda::whereIn('id', $request->ids)->get();
+
+        foreach ($agendas as $post) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $post->delete();
+        }
+
+        return response()->json(['message' => 'Post berhasil dihapus.']);
+    }
+
 
     // Upload gambar/video dari CKEditor
     public function upload(Request $request)
