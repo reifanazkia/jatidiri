@@ -1,15 +1,18 @@
  <?php
 
+use App\Http\Controllers\Api\ApiActivityController;
 use App\Http\Controllers\Api\ApiAgendaController;
 use App\Http\Controllers\Api\ApiAlasanController;
 use App\Http\Controllers\Api\ApiAssesmentController;
 use App\Http\Controllers\Api\ApiBenefitsController;
+use App\Http\Controllers\Api\ApiBonusController;
 use App\Http\Controllers\Api\ApiChatController;
 use App\Http\Controllers\Api\ApiDukunganController;
 use App\Http\Controllers\Api\ApiGanalyticsController;
 use App\Http\Controllers\Api\ApiHowController;
 use App\Http\Controllers\Api\ApiIdentityController;
 use App\Http\Controllers\Api\ApiLegalController;
+use App\Http\Controllers\Api\ApiMasalahController;
 use App\Http\Controllers\Api\ApiOurteamController;
 use App\Http\Controllers\Api\ApiPartnerController;
 use App\Http\Controllers\Api\ApiPixelsController;
@@ -64,6 +67,9 @@ Route::get('/alasan', [ApiAlasanController::class, 'index']);
 Route::get('/alasan/{slug}', [ApiAlasanController::class, 'show']);
 Route::get('/hows', [ApiHowController::class, 'index']);
 Route::get('/hows/{slug}', [ApiHowController::class, 'show']);
-
-
-
+Route::get('/bonus', [ApiBonusController::class, 'index']);
+Route::get('/bonus/{slug}', [ApiBonusController::class, 'show']);
+Route::get('/masalah', [ApiMasalahController::class, 'index']);
+Route::get('/masalah/{slug}', [ApiMasalahController::class, 'show']);
+Route::get('/activity', [ApiActivityController::class, 'index']);
+Route::get('/activity/{slug}', [ApiActivityController::class, 'show']);

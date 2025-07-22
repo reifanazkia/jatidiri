@@ -2,72 +2,95 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bonus;
+use App\Models\Activity;
 use App\Models\Service;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class BonusController extends Controller
+class ActivityController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');
 
-        $data = Bonus::with('service')
+        $data = Activity::with('service')
             ->when($search, function ($query, $search) {
                 $query->where('title', 'like', '%' . $search . '%');
-            })
-            ->latest()
-            ->get();
+            })->latest()->get();
 
-        return view('bonus.index', compact('data', 'search'));
+        return view('activity.index', compact('search', 'data'));
     }
 
-
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $services = Service::all();
-        return view('bonus.create', compact('services'));
+        return view('activity.create', compact('service'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+
         ]);
 
-        $slug = $this->generateUniqueSlug(Str::slug($request->title));
+        $slug = $this->generateUniqueSlug(Str::slug($$request->title));
 
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('bonus', 'public');
         }
 
-        Bonus::create([
+        Activity::create([
             'service_id' => $request->service_id,
             'title' => $request->title,
             'slug' => $slug,
             'description' => $request->description,
-            'image' => $imagePath,
+            'image' => $imagePath
+
         ]);
 
-        return redirect()->route('bonus.index')->with('success', 'Data berhasil disimpan.');
+        return redirect()->route('activity.index')->with('seccess', 'Data Berhasil Di Tambahkan');
     }
 
-    public function edit($id)
+
+    /**
+     * Display the specified resource.
+     */
+    // public function show(string $id)
+    // {
+
+    // }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $data = Bonus::findOrFail($id);
+        $data = Activity::findOrFail($id);
         $services = Service::all();
-        return view('bonus.edit', compact('data', 'services'));
+        return view('activity.create', compact('service'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $data = Bonus::findOrFail($id);
+        $data = Activity::findOrFail($id);
 
         $request->validate([
             'service_id' => 'required|exists:services,id',
@@ -83,7 +106,7 @@ class BonusController extends Controller
                 Storage::disk('public')->delete($data->image);
             }
 
-            $imagePath = $request->file('image')->store('bonus', 'public');
+            $imagePath = $request->file('image')->store('activity', 'public');
             $data->image = $imagePath;
         }
 
@@ -98,24 +121,26 @@ class BonusController extends Controller
         return redirect()->route('bonus.index')->with('success', 'Data berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        $data = Bonus::findOrFail($id);
+        $data = Activity::findOrFail($id);
 
-        if ($data->image && Storage::disk('public')->exists($data->image)) {
-            Storage::disk('public')->delete($data->image);
-        }
+         if ($data->image && Storage::disk('public')->exists($data->image)) {
+                Storage::disk('public')->delete($data->image);
+            }
 
-        $data->delete();
+            $data->delete();
 
-        return redirect()->route('bonus.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('activity.index')->with('success', 'Data Berhasil Di Hapus');
     }
-
-    public function bulkDelete(Request $request)
+  public function bulkDelete(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
 
-        $items = Bonus::whereIn('id', $request->ids)->get();
+        $items = Activity::whereIn('id', $request->ids)->get();
 
         foreach ($items as $item) {
             if ($item->image) {
@@ -143,7 +168,7 @@ class BonusController extends Controller
         $i = 1;
 
         while (
-            Bonus::where('slug', $uniqueSlug)
+            Activity::where('slug', $uniqueSlug)
             ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
             ->exists()
         ) {
@@ -152,4 +177,5 @@ class BonusController extends Controller
 
         return $uniqueSlug;
     }
+
 }

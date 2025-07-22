@@ -10,16 +10,25 @@ use Illuminate\Support\Facades\Storage;
 
 class HowController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = How::with('service')->latest()->get();
-        return view('admin.how.index', compact('data'));
+        $search = $request->input('search');
+
+        $data = How::with('service')
+            ->when($search, function ($query, $search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            })
+            ->latest()
+            ->get();
+
+        return view('how.index', compact('data', 'search'));
     }
+
 
     public function create()
     {
         $services = Service::all();
-        return view('admin.how.create', compact('services'));
+        return view('how.create', compact('services'));
     }
 
     public function store(Request $request)
@@ -53,7 +62,7 @@ class HowController extends Controller
     {
         $data = How::findOrFail($id);
         $services = Service::all();
-        return view('admin.how.edit', compact('data', 'services'));
+        return view('how.edit', compact('data', 'services'));
     }
 
     public function update(Request $request, $id)
@@ -102,7 +111,7 @@ class HowController extends Controller
         return redirect()->route('how.index')->with('success', 'Data berhasil dihapus.');
     }
 
-     public function bulkDelete(Request $request)
+    public function bulkDelete(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
 
@@ -135,8 +144,8 @@ class HowController extends Controller
 
         while (
             How::where('slug', $uniqueSlug)
-                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-                ->exists()
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()
         ) {
             $uniqueSlug = $slug . '-' . $i++;
         }

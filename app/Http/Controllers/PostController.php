@@ -136,7 +136,8 @@ class PostController extends Controller
 
         while (Post::where('slug', $uniqueSlug)
             ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()) {
+            ->exists()
+        ) {
             $uniqueSlug = $slug . '-' . $i++;
         }
 
@@ -152,8 +153,12 @@ class PostController extends Controller
             $path = $file->storeAs('post/ckeditor', $filename, 'public');
 
             return response()->json([
+                'uploaded' => 1,
+                'fileName' => $filename,
                 'url' => asset('storage/' . $path),
             ]);
         }
+
+        return response()->json(['uploaded' => 0, 'error' => ['message' => 'Upload gagal.']]);
     }
 }

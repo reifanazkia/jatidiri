@@ -28,7 +28,9 @@ use App\Http\Controllers\SidebennerController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\WhyController;
 use App\Http\Controllers\BenefitsController;
+use App\Http\Controllers\BonusController;
 use App\Http\Controllers\HowController;
+use App\Http\Controllers\MasalahController;
 use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Auth;
 
@@ -329,5 +331,29 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/show/{slug}', [HowController::class, 'show'])->name('show');
         Route::delete('/bulk-delete', [HowController::class, 'bulkDelete'])->name('bulkDelete');
         Route::post('/upload', [HowController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('bonus')->name('bonus.')->group(function () {
+        Route::get('/', [BonusController::class, 'index'])->name('index');
+        Route::get('/create', [BonusController::class, 'create'])->name('create');
+        Route::post('/store', [BonusController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [BonusController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [BonusController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [BonusController::class, 'destroy'])->name('destroy');
+        // Route::get('/show/{slug}', [BonusController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [BonusController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [BonusController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('masalah')->name('masalah.')->group(function () {
+        Route::get('/', [MasalahController::class, 'index'])->name('index');
+        Route::get('/create', [MasalahController::class, 'create'])->name('create');
+        Route::post('/store', [MasalahController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [MasalahController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [MasalahController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [MasalahController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [MasalahController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [MasalahController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [MasalahController::class, 'upload'])->name('upload');
     });
 });
