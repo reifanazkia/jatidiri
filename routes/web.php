@@ -242,7 +242,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/upload', [SliderController::class, 'upload'])->name('upload');
     });
 
-    // SERVICE
+    // SERVICEf
     Route::prefix('service')->name('service.')->group(function () {
         Route::get('/', [ServiceController::class, 'index'])->name('index');
         Route::get('/create', [ServiceController::class, 'create'])->name('create');
@@ -250,6 +250,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{slug}', [ServiceController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
+        Route::delete('/bulk-delete', [ServiceController::class, 'bulkDelete'])->name('bulkDelete');
         Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [ServiceController::class, 'upload'])->name('upload');
     });
@@ -281,6 +282,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [AssesmentController::class, 'edit'])->name('edit');
         Route::put('/{id}', [WhyController::class, 'update'])->name('update');
         Route::delete('/{id}', [WhyController::class, 'destroy'])->name('destroy');
+        Route::delete('/bulk-delete', [WhyController::class, 'bulkDelete'])->name('bulkDelete');
         Route::post('/upload', [WhyController::class, 'upload'])->name('upload');
     });
 

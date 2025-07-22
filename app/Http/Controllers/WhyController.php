@@ -107,6 +107,22 @@ class WhyController extends Controller
         return redirect()->route('why.index')->with('success', 'Data berhasil dihapus.');
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+
+        $items = Why::whereIn('id', $request->ids)->get();
+
+        foreach ($items as $item) {
+            if ($item->image) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $item->delete();
+        }
+
+        return response()->json(['message' => 'Semua data berhasil dihapus.']);
+    }
+
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {
