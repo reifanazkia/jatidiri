@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\WhyController;
 use App\Http\Controllers\BenefitsController;
 use App\Http\Controllers\BonusController;
 use App\Http\Controllers\HowController;
+use App\Http\Controllers\ManfaatController;
 use App\Http\Controllers\MasalahController;
 use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Auth;
@@ -250,7 +252,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{slug}', [ServiceController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
-        Route::delete('/bulk-delete', [ServiceController::class, 'bulkDelete'])->name('bulkDelete');
         Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
         Route::post('/upload', [ServiceController::class, 'upload'])->name('upload');
     });
@@ -357,5 +358,27 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/show/{slug}', [MasalahController::class, 'show'])->name('show');
         Route::delete('/bulk-delete', [MasalahController::class, 'bulkDelete'])->name('bulkDelete');
         Route::post('/upload', [MasalahController::class, 'upload'])->name('upload');
+    });
+    Route::prefix('activity')->name('activity.')->group(function () {
+        Route::get('/', [ActivityController::class, 'index'])->name('index');
+        Route::get('/create', [ActivityController::class, 'create'])->name('create');
+        Route::post('/store', [ActivityController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ActivityController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [ActivityController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [ActivityController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [ActivityController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [ActivityController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [ActivityController::class, 'upload'])->name('upload');
+    });
+    Route::prefix('manfaat')->name('manfaat.')->group(function () {
+        Route::get('/', [ManfaatController::class, 'index'])->name('index');
+        Route::get('/create', [ManfaatController::class, 'create'])->name('create');
+        Route::post('/store', [ManfaatController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ManfaatController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [ManfaatController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [ManfaatController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [ManfaatController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [ManfaatController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [ManfaatController::class, 'upload'])->name('upload');
     });
 });

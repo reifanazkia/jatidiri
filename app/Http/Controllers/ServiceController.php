@@ -125,22 +125,6 @@ class ServiceController extends Controller
         return redirect()->route('service.index')->with('success', 'Service berhasil dihapus.');
     }
 
-     public function bulkDelete(Request $request)
-    {
-        $request->validate(['ids' => 'required|array']);
-
-        $items = Service::whereIn('id', $request->ids)->get();
-
-        foreach ($items as $item) {
-            if ($item->image) {
-                Storage::disk('public')->delete($item->image);
-            }
-            $item->delete();
-        }
-
-        return response()->json(['message' => 'Semua data berhasil dihapus.']);
-    }
-
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {
