@@ -30,6 +30,7 @@ use App\Http\Controllers\SliderController;
 use App\Http\Controllers\WhyController;
 use App\Http\Controllers\BenefitsController;
 use App\Http\Controllers\BonusController;
+use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\HowController;
 use App\Http\Controllers\ManfaatController;
 use App\Http\Controllers\MasalahController;
@@ -380,5 +381,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/show/{slug}', [ManfaatController::class, 'show'])->name('show');
         Route::delete('/bulk-delete', [ManfaatController::class, 'bulkDelete'])->name('bulkDelete');
         Route::post('/upload', [ManfaatController::class, 'upload'])->name('upload');
+    });
+
+    Route::prefix('faqs')->name('faqs.')->group(function () {
+        Route::get('/', [FaqsController::class, 'index'])->name('index');
+        Route::get('/create', [FaqsController::class, 'create'])->name('create');
+        Route::post('/store', [FaqsController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [FaqsController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [FaqsController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [FaqsController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{slug}', [FaqsController::class, 'show'])->name('show');
+        Route::delete('/bulk-delete', [FaqsController::class, 'bulkDelete'])->name('bulkDelete');
+        Route::post('/upload', [FaqsController::class, 'upload'])->name('upload');
     });
 });
