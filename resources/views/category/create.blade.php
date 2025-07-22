@@ -7,56 +7,18 @@
     <div class="container mt-[32px] p-[32px] max-h-auto max-w-auto bg-white rounded-[16px] shadow-md">
         <h2 class="text-[24px] font-medium px-[18px] mb-[32px]">Add</h2>
 
-        <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form action="{{ route('category.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <div class="space-y-6">
                 {{-- Title --}}
                 <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input id="title" name="title" type="text" placeholder="Judul Post"
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+                    <input id="title" name="title" type="text" placeholder="Name category"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200" />
                 </div>
-
-                {{-- Resume --}}
-                <div class="space-y-4">
-                    <label for="resume" class="block text-sm font-medium text-gray-700">Resume</label>
-                    <textarea name="resume" id="resume" rows="5"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 resize-none">
-                        {{ old('resume', $data->resume ?? '') }}
-                    </textarea>
-                </div>
-
-                {{-- Content --}}
-                <div class="space-y-4 mt-6">
-                    <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
-                    <textarea name="content" id="content" rows="10"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 resize-none">
-                        {{ old('content', $data->content ?? '') }}
-                    </textarea>
-                </div>
-
-                {{-- Kategori & Tanggal --}}
-                <div class="flex gap-4 items-center">
-                    <div class="w-1/2">
-                        <label for="category" class="block text-gray-500 text-[14px] px-[18px] mb-1">Category</label>
-                        <select name="category" id="category"
-                            class="w-full px-4 py-2 text-[14px] border rounded shadow focus:outline-none">
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="w-1/2">
-                        <label for="publish_date" class="block text-gray-500 text-[14px] px-[18px] mb-1">Publish
-                            Date</label>
-                        <input type="date" name="publish_date" id="publish_date"
-                            class="w-full px-4 py-2 text-[14px] border rounded shadow focus:outline-none">
-                    </div>
-                </div>
-
                 {{-- Upload Image --}}
-                <div class="w-full max-w-4xl mx-auto mt-10">
+                <div class="w-full max-w-4xl mt-10">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image (Max Size: 750kb)</label>
 
                     {{-- Area Upload --}}
@@ -66,10 +28,10 @@
                         {{-- Icon & Text --}}
                         <label id="upload-placeholder" for="image"
                             class="flex flex-col items-center space-y-3 text-gray-500 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 16V4m10 12V4m-5 16l-5-5m10 0l-5 5" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-10 h-10">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                             </svg>
                             <span class="text-center text-sm">Drag and drop a file here or click</span>
                         </label>
@@ -99,13 +61,7 @@
 @endsection
 
 @section('scripts')
-    {{-- CKEditor CDN --}}
-    <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
-    <script>
-        console.log("CKEditor mulai...");
-        CKEDITOR.replace('resume');
-        CKEDITOR.replace('content');
-    </script>
+
 
     {{-- Trix Editor (kalau kamu masih pakai) --}}
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">

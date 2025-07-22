@@ -29,16 +29,18 @@
 
 
                 {{-- Categories --}}
-                <div
-                    class="flex items-center bg-blue-500 rounded-full px-5 h-[50px] gap-3 cursor-pointer hover:bg-blue-600 transition">
-                    <p class="text-[15px] text-white">Categories</p>
-                    <div class="border-l border-white h-[20px]"></div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6 text-white">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
-                    </svg>
-                </div>
+                <a href="{{ route('category.index') }}" class="inline-block">
+                    <button type="button"
+                        class="flex items-center bg-blue-500 rounded-full px-5 h-[50px] gap-3 cursor-pointer hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2">
+                        <p class="text-[15px] text-white">Categories</p>
+                        <div class="border-l border-white h-[20px]"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                        </svg>
+                    </button>
+                </a>
             </div>
 
             {{-- Search Input + Button --}}
@@ -134,16 +136,18 @@
                         <!-- Tombol Aksi -->
                         <div class="flex gap-2 mt-10">
                             <!-- Edit -->
-                            <a href="#"
+                            <a href="{{ route('posts.edit', $post->id) }}"
                                 class="w-[55px] h-[32px] rounded-md bg-[#7C6AED] text-white text-center flex items-center justify-center font-medium text-[14px] hover:scale-110 transition">
                                 Edit
                             </a>
+
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
         <!-- Paginasi -->
+        <input type="hidden" id="all-post-ids" value="{{ $posts->pluck('id')->implode(',') }}">
         <div class="flex justify-center mt-10 space-x-2">
             {{-- Tombol Previous --}}
             @php
@@ -155,22 +159,22 @@
             @if ($posts->onFirstPage())
                 <span class="px-3 py-1 text-gray-400 cursor-not-allowed">« Previous</span>
             @else
-                <a href="{{ $posts->previousPageUrl() }}" class="px-3 py-1 text-purple-600 hover:underline">« Previous</a>
+                <a href="{{ $posts->previousPageUrl() }}" class="px-3 py-1 text-[#3030F8] hover:underline">« Previous</a>
             @endif
 
             {{-- Angka halaman --}}
             @for ($i = $start; $i <= $end; $i++)
                 @if ($i == $posts->currentPage())
-                    <span class="px-3 py-1 bg-purple-500 text-purple-600 rounded shadow ">{{ $i }}</span>
+                    <span class="px-3 py-1 bg-[#3030F8] text-white rounded shadow ">{{ $i }}</span>
                 @else
                     <a href="{{ $posts->url($i) }}"
-                        class="px-3 py-1 border border-purple-500 text-purple-600 rounded hover:bg-purple-700">{{ $i }}</a>
+                        class="px-3 py-1 border border-[#3030F8] text-black rounded hover:bg-purple-700">{{ $i }}</a>
                 @endif
             @endfor
 
             {{-- Tombol Next --}}
             @if ($posts->hasMorePages())
-                <a href="{{ $posts->nextPageUrl() }}" class="px-3 py-1 text-purple-600 hover:underline">Next »</a>
+                <a href="{{ $posts->nextPageUrl() }}" class="px-3 py-1 text-[#3030F8] hover:underline">Next »</a>
             @else
                 <span class="px-3 py-1 text-gray-400 cursor-not-allowed">Next »</span>
             @endif
@@ -219,23 +223,148 @@
     </script>
 
     <script>
-        const checkAll = document.getElementById('checkAll');
-        const checkboxes = document.querySelectorAll('.item-checkbox');
+        // Variabel untuk menyimpan semua ID yang dipilih
+        let selectedPosts = JSON.parse(localStorage.getItem('selectedPosts')) || {};
+        let allPostIds = []; // Ini akan menyimpan semua ID post yang ada di semua halaman
 
-        checkAll.addEventListener('change', function() {
-            checkboxes.forEach(cb => cb.checked = this.checked);
-            updateBulkActions(); // Kalau kamu pakai bulk action
+        // Fungsi untuk mengumpulkan semua ID post (dipanggil saat inisialisasi)
+        function collectAllPostIds() {
+            allPostIds = [];
+            const allIdsInput = document.getElementById('all-post-ids');
+            if (allIdsInput && allIdsInput.value) {
+                allPostIds = allIdsInput.value.split(',');
+            }
+        }
+
+        // Fungsi untuk update tampilan checkbox
+        function updateCheckboxes() {
+            // Update checkbox di halaman saat ini
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                const postId = checkbox.value;
+                checkbox.checked = selectedPosts[postId] || false;
+            });
+
+            // Update checkbox "Pilih Semua" berdasarkan semua post, bukan hanya yang terlihat
+            const allChecked = allPostIds.length > 0 &&
+                allPostIds.every(id => selectedPosts[id]);
+            document.getElementById('checkAll').checked = allChecked;
+
+            // Update tampilan bulk actions
+            updateBulkActions();
+        }
+
+        // Fungsi untuk update bulk actions
+        function updateBulkActions() {
+            const selectedIds = Object.keys(selectedPosts).filter(id => selectedPosts[id]);
+            const count = selectedIds.length;
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            const selectedIdsInput = document.getElementById('selected-ids');
+
+            if (count > 0) {
+                bulkActions.classList.remove('max-h-0', 'opacity-0', 'scale-95');
+                bulkActions.classList.add('max-h-40', 'opacity-100', 'scale-100');
+            } else {
+                bulkActions.classList.add('max-h-0', 'opacity-0', 'scale-95');
+                bulkActions.classList.remove('max-h-40', 'opacity-100', 'scale-100');
+            }
+
+            selectedCount.textContent = count;
+            selectedIdsInput.value = selectedIds.join(',');
+        }
+
+        // Event listener saat dokumen siap
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kumpulkan semua ID post yang ada
+            collectAllPostIds();
+
+            // Inisialisasi dari localStorage
+            updateCheckboxes();
+
+            // Handle checkbox "Pilih Semua"
+            document.getElementById('checkAll').addEventListener('change', function() {
+                const isChecked = this.checked;
+
+                // Update semua post di semua halaman
+                allPostIds.forEach(id => {
+                    selectedPosts[id] = isChecked;
+                });
+
+                localStorage.setItem('selectedPosts', JSON.stringify(selectedPosts));
+                updateCheckboxes();
+            });
+
+            // Handle checkbox individual
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('item-checkbox')) {
+                    const postId = e.target.value;
+                    selectedPosts[postId] = e.target.checked;
+                    localStorage.setItem('selectedPosts', JSON.stringify(selectedPosts));
+
+                    // Update "Pilih Semua" berdasarkan semua post
+                    const allChecked = allPostIds.length > 0 &&
+                        allPostIds.every(id => selectedPosts[id]);
+                    document.getElementById('checkAll').checked = allChecked;
+
+                    updateBulkActions();
+                }
+            });
         });
 
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', function() {
-                checkAll.checked = [...checkboxes].every(cb => cb.checked);
-                updateBulkActions(); // opsional
-            });
+        // Fungsi untuk membatalkan seleksi
+        function cancelSelection() {
+            selectedPosts = {};
+            localStorage.removeItem('selectedPosts');
+            updateCheckboxes();
+        }
+
+        // Reset seleksi setelah submit
+        document.getElementById('bulk-delete-form')?.addEventListener('submit', function() {
+            localStorage.removeItem('selectedPosts');
         });
     </script>
 
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+    @endif
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            const searchButton = document.querySelector('.flex.items-center.gap-3 button');
+            const cards = document.querySelectorAll('[data-card]'); // Sesuaikan dengan selector card Anda
+
+            // Fungsi pencarian
+            function handleSearch() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+
+                cards.forEach(card => {
+                    const cardText = card.textContent.toLowerCase();
+                    if (cardText.includes(searchTerm)) {
+                        card.style.display = ''; // Tampilkan card yang cocok
+                    } else {
+                        card.style.display = 'none'; // Sembunyikan card yang tidak cocok
+                    }
+                });
+            }
+
+            // Event listener untuk tombol search
+            searchButton.addEventListener('click', handleSearch);
+
+            // Optional: Live search saat mengetik
+            searchInput.addEventListener('input', function() {
+                handleSearch();
+            });
+        });
+    </script>
 
 
 
