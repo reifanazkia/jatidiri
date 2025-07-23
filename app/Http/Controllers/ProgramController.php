@@ -2,177 +2,199 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assesment;
-use Illuminate\Http\Request;
 use App\Models\Program;
-use App\Models\Ourteam;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProgramController extends Controller
 {
+
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $query = Program::query();
 
-        $programs = Program::query()
-            ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('category', 'like', "%{$search}%"))
-            ->paginate(10)
-            ->withQueryString();
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-        return view('program.index', compact('programs', 'search'));
+        $data = $query->latest()->paginate(10); // paginate 10 item per halaman
+
+        return view('program.index', compact('data'));
+    }
+    
+    // STEP 1: TAMPILKAN FORM
+    public function create()
+    {
+        return view('program.create-step1');
     }
 
-    public function create() // step1 form
+    // STEP 1: SIMPAN DATA
+    public function storeStep1(Request $request)
     {
-        $outreams = Ourteam::all();
-        $facilities = Assesment::all();
-        return view('program.create', compact('outreams','facilities'));
-    }
-
-    public function store(Request $req)
-    {
-        $hasNewImage1 = $req->hasFile('image1');
-        $hasPreview1 = !empty($req->input('image1_preview'));
-        $img1Required = !$hasNewImage1 && !$hasPreview1;
-
-        $rules = [
+        $request->validate([
             'name' => 'required|string',
-            'category' => 'nullable|string',
-            'slug' => 'nullable|string',
-            'outream_id' => 'nullable|exists:outreams,id',
-            'facility_id' => 'nullable|exists:facilities,id',
-            'title1'=>'nullable|string','description1'=>'nullable|string',
-            'image1_preview'=>'nullable|string'
-        ];
+            'facility_id' => 'required|integer',
+            'title1' => 'required|string',
+            'description1' => 'required|string',
+            'image1' => 'nullable|image|max:2048',
+        ]);
 
-        $rules['slug'] = 'nullable|string';
-        $rules['image1'] = $img1Required
-            ? 'required|image|max:750'
-            : 'nullable|image|max:750';
+        $data = $request->only(['name', 'facility_id', 'title1', 'description1']);
 
-        $validated = $req->validate($rules);
-        $validated['slug'] = Str::slug($validated['name']);
-        unset($validated['image1_preview']);
-
-        if ($req->hasFile('image1')) {
-            $validated['image1'] = $req->file('image1')->store('programs','public');
+        if ($request->hasFile('image1')) {
+            $data['image1'] = $request->file('image1')->store('programs', 'public');
         }
 
-        $program = Program::create($validated);
-        return redirect()->route('program.step2',$program->id)
-            ->with('success','Langkah 1 selesai')->with('program_id',$program->id);
+        $data['slug'] = $this->generateUniqueSlug(Str::slug($data['name']));
+
+        $program = Program::create($data);
+
+        return redirect()->route('program.step2', $program->id);
     }
 
-    public function step2(string $id)
+    // STEP 2: TAMPILKAN FORM
+    public function step2($id)
     {
         $program = Program::findOrFail($id);
-        return view('program.step2', compact('program'));
+        return view('program.create-step2', compact('program'));
     }
 
-    public function step2Update(Request $req, string $id)
-    {
-        $p = Program::findOrFail($id);
-
-        $hasNew2 = $req->hasFile('image2');
-        $hasPrev2 = !empty($req->input('image2_preview'));
-        $rem2 = $req->input('remove_image2')==='1';
-        $req2 = ((!$p->image2 && !$hasNew2 && !$hasPrev2) || ($rem2 && !$hasNew2 && !$hasPrev2));
-
-        $hasNew3 = $req->hasFile('image3');
-        $hasPrev3 = !empty($req->input('image3_preview'));
-        $rem3 = $req->input('remove_image3')==='1';
-        $req3 = ((!$p->image3 && !$hasNew3 && !$hasPrev3) || ($rem3 && !$hasNew3 && !$hasPrev3));
-
-        $rules = [
-            'title2'=>'required|string','description2'=>'required|string',
-            'title3'=>'required|string','description3'=>'required|string',
-            'image2_preview'=>'nullable|string','image3_preview'=>'nullable|string',
-            'remove_image2'=>'nullable|string','remove_image3'=>'nullable|string',
-        ];
-        $rules['image2'] = $req2 ? 'required|image|max:750' : 'nullable|image|max:750';
-        $rules['image3'] = $req3 ? 'required|image|max:750' : 'nullable|image|max:750';
-
-        $validated = $req->validate($rules);
-        unset($validated['image2_preview'],$validated['image3_preview']);
-
-        // fungsi bantu hapus/upload image2
-        if ($rem2) {
-            if ($p->image2) Storage::disk('public')->delete($p->image2);
-            $validated['image2'] = $hasNew2 ? $req->file('image2')->store('programs','public') : null;
-        } elseif ($hasNew2) {
-            if ($p->image2) Storage::disk('public')->delete($p->image2);
-            $validated['image2'] = $req->file('image2')->store('programs','public');
-        } else unset($validated['image2']);
-
-        // image3
-        if ($rem3) {
-            if ($p->image3) Storage::disk('public')->delete($p->image3);
-            $validated['image3'] = $hasNew3 ? $req->file('image3')->store('programs','public') : null;
-        } elseif ($hasNew3) {
-            if ($p->image3) Storage::disk('public')->delete($p->image3);
-            $validated['image3'] = $req->file('image3')->store('programs','public');
-        } else unset($validated['image3']);
-
-        $p->update($validated);
-        return redirect()->route('program.step3',$p->id)->with('success','Langkah 2 selesai');
-    }
-
-    public function step3(string $id)
+    // STEP 2: UPDATE
+    public function updateStep2(Request $request, $id)
     {
         $program = Program::findOrFail($id);
-        return view('program.step3', compact('program'));
-    }
 
-    public function step3Update(Request $req, string $id)
-    {
-        $p = Program::findOrFail($id);
+        $request->validate([
+            'ourteam_id' => 'required|integer',
+            'id_yt' => 'nullable|string',
+            'title2' => 'required|string',
+            'dukungan_id' => 'required|integer',
+            'description2' => 'required|string',
+            'image2' => 'nullable|image|max:2048',
+            'title3' => 'required|string',
+            'description3' => 'required|string',
+            'image3' => 'nullable|image|max:2048',
+        ]);
 
-        $hasNew4 = $req->hasFile('image4');
-        $hasPrev4 = !empty($req->input('image4_preview'));
-        $rem4 = $req->input('remove_image4')==='1';
-        $req4 = ((!$p->image4 && !$hasNew4 && !$hasPrev4) || ($rem4 && !$hasNew4));
-
-        $hasNewBro = $req->hasFile('brosur');
-
-        $rules = [
-            'title4'=>'required|string','description4'=>'required|string',
-            'age'=>'required|string','weekly'=>'required|string','periode'=>'required|string',
-            'class_size'=>'required|string','time_table2'=>'nullable|string',
-            'content'=>'nullable|string','cta'=>'nullable|string',
-            'link_program'=>'nullable|string','id_yt'=>'nullable|string',
-            'remove_image4'=>'nullable|string','image4_preview'=>'nullable|string'
-        ];
-        $rules['image4'] = $req4 ? 'required|image|max:750' : 'nullable|image|max:750';
-        $rules['brosur'] = $hasNewBro ? 'nullable|file|max:2048' : 'nullable|file|max:2048';
-
-        $validated = $req->validate($rules);
-        unset($validated['image4_preview']);
-
-        if ($rem4) {
-            if ($p->image4) Storage::disk('public')->delete($p->image4);
-            $validated['image4'] = $hasNew4 ? $req->file('image4')->store('programs','public') : null;
-        } elseif ($hasNew4) {
-            if ($p->image4) Storage::disk('public')->delete($p->image4);
-            $validated['image4'] = $req->file('image4')->store('programs','public');
-        } else unset($validated['image4']);
-
-        if ($hasNewBro) {
-            if ($p->brosur) Storage::disk('public')->delete($p->brosur);
-            $validated['brosur'] = $req->file('brosur')->store('brosurs','public');
+        if ($request->has('remove_image2') || $request->hasFile('image2')) {
+            if ($program->image2 && Storage::disk('public')->exists($program->image2)) {
+                Storage::disk('public')->delete($program->image2);
+            }
+            $program->image2 = null;
+        }
+        if ($request->hasFile('image2')) {
+            $program->image2 = $request->file('image2')->store('programs', 'public');
         }
 
-        $p->update($validated);
-        return redirect()->route('program.index')->with('success','Program berhasil dibuat!');
+        if ($request->has('remove_image3') || $request->hasFile('image3')) {
+            if ($program->image3 && Storage::disk('public')->exists($program->image3)) {
+                Storage::disk('public')->delete($program->image3);
+            }
+            $program->image3 = null;
+        }
+        if ($request->hasFile('image3')) {
+            $program->image3 = $request->file('image3')->store('programs', 'public');
+        }
+
+        $program->update($request->only([
+            'ourteam_id', 'id_yt', 'title2', 'dukungan_id',
+            'description2', 'title3', 'description3'
+        ]));
+
+        return redirect()->route('program.step3', $program->id);
     }
 
-    public function destroy(string $id)
+    // STEP 3: TAMPILKAN FORM
+    public function step3($id)
     {
-        $p = Program::findOrFail($id);
-        foreach (['image1','image2','image3','image4','brosur'] as $field) {
-            if ($p->$field) Storage::disk('public')->delete($p->$field);
+        $program = Program::findOrFail($id);
+        return view('program.create-step3', compact('program'));
+    }
+
+    // STEP 3: UPDATE
+    public function updateStep3(Request $request, $id)
+    {
+        $program = Program::findOrFail($id);
+
+        $request->validate([
+            'title4' => 'required|string',
+            'description4' => 'required|string',
+            'image4' => 'nullable|image|max:2048',
+            'content' => 'required|string',
+            'cta' => 'nullable|string',
+            'link_program' => 'nullable|url',
+            'brosur' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        if ($request->has('remove_image4') || $request->hasFile('image4')) {
+            if ($program->image4 && Storage::disk('public')->exists($program->image4)) {
+                Storage::disk('public')->delete($program->image4);
+            }
+            $program->image4 = null;
         }
-        $p->delete();
-        return redirect()->route('program.index')->with('success','Program dihapus lengkap dengan file.');
+        if ($request->hasFile('image4')) {
+            $program->image4 = $request->file('image4')->store('programs', 'public');
+        }
+
+        if ($request->has('remove_brosur') || $request->hasFile('brosur')) {
+            if ($program->brosur && Storage::disk('public')->exists($program->brosur)) {
+                Storage::disk('public')->delete($program->brosur);
+            }
+            $program->brosur = null;
+        }
+        if ($request->hasFile('brosur')) {
+            $program->brosur = $request->file('brosur')->store('programs/brosur', 'public');
+        }
+
+        $program->update($request->only([
+            'title4', 'description4', 'content', 'cta', 'link_program'
+        ]));
+
+        return redirect()->route('program.index')->with('success', 'Program berhasil disimpan.');
+    }
+
+    // SLUG UNIK
+    protected function generateUniqueSlug($slug)
+    {
+        $uniqueSlug = $slug;
+        $i = 1;
+        while (Program::where('slug', $uniqueSlug)->exists()) {
+            $uniqueSlug = $slug . '-' . $i++;
+        }
+        return $uniqueSlug;
+    }
+
+    // CKEDITOR UPLOAD
+    public function upload(Request $request)
+    {
+        if ($request->hasFile('upload')) {
+            $file = $request->file('upload');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('uploads/programs', $filename, 'public');
+
+            return response()->json([
+                'url' => asset('storage/' . $path),
+            ]);
+        }
+    }
+
+    // BULK DELETE
+    public function bulkDelete(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+
+        $programs = Program::whereIn('id', $request->ids)->get();
+
+        foreach ($programs as $program) {
+            foreach (['image1', 'image2', 'image3', 'image4', 'brosur'] as $field) {
+                if ($program->$field && Storage::disk('public')->exists($program->$field)) {
+                    Storage::disk('public')->delete($program->$field);
+                }
+            }
+            $program->delete();
+        }
+
+        return response()->json(['message' => 'Program berhasil dihapus.']);
     }
 }

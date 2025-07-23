@@ -11,7 +11,7 @@ class Program extends Model
         'title2', 'description2', 'image2', 'title3', 'description3', 'image3',
         'title4', 'description4', 'image4', 'age', 'weekly', 'periode',
         'ourteam_id', 'class_size', 'time_table', 'time_table2', 'content',
-        'cta', 'link_program', 'id_yt', 'brosur'
+        'cta', 'link_program', 'id_yt', 'brosur', 'facility_id'
     ];
 
     public function facility()

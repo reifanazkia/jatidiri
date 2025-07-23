@@ -98,15 +98,23 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Programs
-    Route::prefix('programs')->name('programs.')->group(function () {
-        Route::get('/program', [ProgramController::class, 'index'])->name('index');
-        Route::post('/', [ProgramController::class, 'store'])->name('store');
-        Route::get('/show/{slug}', [ProgramController::class, 'show'])->name('show');
-        Route::put('/update/{id}', [ProgramController::class, 'update'])->name('update');
+    Route::prefix('program')->name('program.')->group(function () {
+        Route::get('/', [ProgramController::class, 'index'])->name('index');
+        Route::get('/create', [ProgramController::class, 'create'])->name('create');
+        Route::post('/store-step1', [ProgramController::class, 'storeStep1'])->name('store.step1');
+        Route::get('/step2/{id}', [ProgramController::class, 'step2'])->name('step2');
+        Route::post('/store-step2/{id}', [ProgramController::class, 'storeStep2'])->name('store.step2');
+        Route::get('/step3/{id}', [ProgramController::class, 'step3'])->name('step3');
+        Route::post('/store-step3/{id}', [ProgramController::class, 'storeStep3'])->name('store.step3');
+
+        Route::get('/edit/{id}', [ProgramController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [ProgramController::class, 'update'])->name('update');
         Route::delete('/destroy/{id}', [ProgramController::class, 'destroy'])->name('destroy');
-        Route::delete('/bulk-delete', [ProgramController::class, 'bulkDelete'])->name('bulkDelete');
+
+        Route::post('/bulk-delete', [ProgramController::class, 'bulkDelete'])->name('bulk-delete');
         Route::post('/upload', [ProgramController::class, 'upload'])->name('upload');
     });
+
 
     // Unggulans
     Route::prefix('unggulans')->name('unggulans.')->group(function () {
