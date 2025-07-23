@@ -13,7 +13,9 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = [
-        'name', 'slug', 'image',
+        'name',
+        'slug',
+        'image',
     ];
 
     protected static function boot()
@@ -28,5 +30,10 @@ class Category extends Model
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function faqs()
+    {
+        return $this->hasMany(Faqs::class);
     }
 }

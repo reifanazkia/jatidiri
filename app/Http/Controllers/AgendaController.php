@@ -23,6 +23,11 @@ class AgendaController extends Controller
         return view('admin.agenda.index', compact('agendas'));
     }
 
+    public function create()
+    {
+        return view('admin.agenda.create');
+    }
+
     // Simpan agenda baru
     public function store(Request $request)
     {
@@ -39,7 +44,7 @@ class AgendaController extends Controller
             'organizer'     => 'nullable|string|max:255',
             'register_link' => 'nullable|url',
             'contact'       => 'nullable|string|max:255',
-            'image'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->except('image');
@@ -61,6 +66,54 @@ class AgendaController extends Controller
         $agenda = Agenda::where('slug', $slug)->firstOrFail();
         return view('admin.agenda.show', compact('agenda'));
     }
+
+    public function edit($id)
+    {
+        $agenda = Agenda::findOrFail($id);
+        return view('admin.agenda.edit', compact('agenda'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $agenda = Agenda::findOrFail($id);
+
+        $request->validate([
+            'title'         => 'required|string|max:255',
+            'agendacat'     => 'nullable|string|max:255',
+            'start_date'    => 'required|date',
+            'end_date'      => 'nullable|date',
+            'start_time'    => 'required',
+            'end_time'      => 'nullable',
+            'content'       => 'required',
+            'location'      => 'nullable|string|max:255',
+            'yt_link'       => 'nullable|url',
+            'organizer'     => 'nullable|string|max:255',
+            'register_link' => 'nullable|url',
+            'contact'       => 'nullable|string|max:255',
+            'image'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $data = $request->except(['image', 'slug']);
+
+        // Slug otomatis jika title berubah
+        if ($agenda->title !== $request->title) {
+            $baseSlug = Str::slug($request->title);
+            $data['slug'] = $this->generateUniqueSlug($baseSlug);
+        }
+
+        // Ganti gambar jika upload baru
+        if ($request->hasFile('image')) {
+            if ($agenda->image && Storage::disk('public')->exists($agenda->image)) {
+                Storage::disk('public')->delete($agenda->image);
+            }
+            $data['image'] = $request->file('image')->store('agenda', 'public');
+        }
+
+        $agenda->update($data);
+
+        return redirect()->route('agenda.index')->with('success', 'Agenda berhasil diperbarui.');
+    }
+
 
     // Hapus agenda dan gambarnya
     public function destroy($id)

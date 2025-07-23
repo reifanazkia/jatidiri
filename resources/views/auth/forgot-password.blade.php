@@ -18,7 +18,11 @@
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3030F8] to-[#D7D7FE]">
 
     <!-- Card -->
+<<<<<<< HEAD
     <div class="w-xs h-xs bg-white rounded-[16px] shadow-2xl sm:w-[464px] p-8">
+=======
+    <div class="w-xs h-xs bg-white rounded-[16px] shadow-2xl sm:w-[464px] sm:h-[428px] p-8">
+>>>>>>> 0e1c82028b5296f1ffc528542e1144d0db22dd91
         <h1 class="text-[48px] font-bold text-[#010143] leading-[100%] mb-[8px] ">Reset Password</h1>
         <p class="text-sm text-gray-500 text-[16px] mb-[24px]">Silakan masukkan detail anda di bawah ini</p>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ourteam;
 use App\Models\OurteamCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class OurteamController extends Controller
 {
@@ -12,6 +13,12 @@ class OurteamController extends Controller
     {
         $data = Ourteam::with('category')->latest()->get();
         return view('admin.ourteam.index', compact('data'));
+    }
+
+    public function create()
+    {
+        $categories = OurteamCategory::all();
+        return view('admin.ourteam.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -25,17 +32,30 @@ class OurteamController extends Controller
             't' => 'nullable|string',
             'phone' => 'nullable|string',
             'email' => 'nullable|email',
-            'image' => 'required|string',
+            'image' => 'required|image|max:750',
         ]);
 
-        Ourteam::create($request->all());
-        return back()->with('success', 'Team ditambahkan');
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('ourteam', 'public');
+        }
+
+        Ourteam::create($data);
+        return back()->with('success', 'Team berhasil ditambahkan');
     }
 
     public function show($id)
     {
         $item = Ourteam::with('category')->findOrFail($id);
         return view('admin.ourteam.show', compact('item'));
+    }
+
+    public function edit($id)
+    {
+        $team = Ourteam::findOrFail($id);
+        $categories = OurteamCategory::all();
+        return view('admin.ourteam.edit', compact('team', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -49,18 +69,32 @@ class OurteamController extends Controller
             't' => 'nullable|string',
             'phone' => 'nullable|string',
             'email' => 'nullable|email',
-            'image' => 'required|string',
+            'image' => 'nullable|image|max:750',
         ]);
 
         $team = Ourteam::findOrFail($id);
-        $team->update($request->all());
+        $data = $request->except('image');
 
-        return back()->with('success', 'Team diperbarui');
+        if ($request->hasFile('image')) {
+            if ($team->image) {
+                Storage::disk('public')->delete($team->image);
+            }
+            $data['image'] = $request->file('image')->store('ourteam', 'public');
+        }
+
+        $team->update($data);
+        return back()->with('success', 'Team berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        Ourteam::findOrFail($id)->delete();
-        return back()->with('success', 'Team dihapus');
+        $team = Ourteam::findOrFail($id);
+
+        if ($team->image) {
+            Storage::disk('public')->delete($team->image);
+        }
+
+        $team->delete();
+        return back()->with('success', 'Team berhasil dihapus');
     }
 }

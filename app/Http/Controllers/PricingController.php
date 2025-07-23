@@ -62,7 +62,7 @@ class PricingController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'description' => 'required',
-            'program_id' => 'required|string',
+            'program_id' => 'required|exists:programs,id',
             'price' => 'required|string',
             'diskon' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -81,7 +81,7 @@ class PricingController extends Controller
             if ($pricing->image && Storage::disk('public')->exists($pricing->image)) {
                 Storage::disk('public')->delete($pricing->image);
             }
-            $data['image'] = $request->file('image')->store('agenda', 'public');
+            $data['image'] = $request->file('image')->store('pricing', 'public');
         }
 
         $pricing->update($data);
@@ -89,7 +89,7 @@ class PricingController extends Controller
         return redirect()->route('pricing.index')->with('success', 'Agenda berhasil diperbarui.');
     }
 
-    // Hapus agenda dan gambarnya
+    // Hapus pricing dan gambarnya
     public function destroy($id)
     {
         $pricing = Pricing::findOrFail($id);
