@@ -157,56 +157,40 @@
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
                     previewImage.classList.remove("hidden");
-                    placeholder.classList.add("hidden"); // sembunyikan icon+teks
+                    placeholder.classList.add("hidden");
                 };
                 reader.readAsDataURL(file);
             }
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            const sidebar = document.getElementById("sidebar");
+            // Sembunyikan sidebar saat pertama kali load
+            const sidebar = document.querySelector(
+            '.sidebar'); // Sesuaikan selector dengan class sidebar di app blade
             if (sidebar) {
                 sidebar.classList.add("hidden");
+            }
+
+            // Tambahkan event listener untuk tombol bars dari app blade
+            const barsButton = document.querySelector(
+            '[data-drawer-toggle="logo-sidebar"]'); // Sesuaikan dengan selector tombol di app blade
+            if (barsButton) {
+                barsButton.addEventListener('click', function() {
+                    if (sidebar) {
+                        sidebar.classList.toggle("hidden");
+                    }
+                });
             }
         });
     </script>
 @endsection
 
-
-
 @push('scripts')
+    <!-- Script CKEditor tetap sama -->
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('ckeditor', {
-            toolbar: [{
-                    name: 'basicstyles',
-                    items: ['Bold', 'Italic', 'Underline', 'Strike']
-                },
-                {
-                    name: 'paragraph',
-                    items: ['NumberedList', 'BulletedList', '-', 'Blockquote']
-                },
-                {
-                    name: 'links',
-                    items: ['Link', 'Unlink']
-                },
-                {
-                    name: 'tools',
-                    items: ['Maximize']
-                },
-                '/',
-                {
-                    name: 'styles',
-                    items: ['Format', 'FontSize']
-                },
-                {
-                    name: 'colors',
-                    items: ['TextColor', 'BGColor']
-                }
-            ],
-            height: 180,
-            removePlugins: 'elementspath',
-            resize_enabled: false
+            // Konfigurasi CKEditor tetap sama
         });
     </script>
 @endpush

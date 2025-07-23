@@ -5,15 +5,15 @@
 
 
 @section('content')
-    <div class="container p-2 bg-white rounded-">
+    <div class="container p-8 px-8 bg-white rounded-xl">
         {{-- Header Action (Add Post & Categories) --}}
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 mt-7 mb-6">
             <div class="flex gap-4 items-center">
                 {{-- Add Post --}}
                 <div
-                    class="bg-blue-500 rounded-full w-[150px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
+                    class="mt-[38px] bg-blue-500 rounded-full w-[102px] h-[38px] p-[36px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
                     {{-- Icon Section --}}
-                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ml-2">
+                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 text-blue-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -22,7 +22,7 @@
                     </div>
 
                     {{-- Text Section --}}
-                    <a href="{{ route('posts.create') }}" class="text-sm font-semibold text-white px-3">
+                    <a href="{{ route('posts.create') }}" class="text-sm font-normal leading-[130%] text-white px-3 py-[11px]">
                         Add Post
                     </a>
                 </div>
@@ -31,7 +31,7 @@
                 {{-- Categories --}}
                 <a href="{{ route('category.index') }}" class="inline-block">
                     <button type="button"
-                        class="flex items-center bg-blue-500 rounded-full px-5 h-[50px] gap-3 cursor-pointer hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2">
+                        class="flex items-center bg-blue-500 rounded-full px-5 h-[40px] gap-3 cursor-pointer hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2">
                         <p class="text-[15px] text-white">Categories</p>
                         <div class="border-l border-white h-[20px]"></div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -69,7 +69,7 @@
         </div>
 
         {{-- Checkbox Pilih Semua --}}
-        <div class="mb-6">
+        <div class="mb-3">
             <label class="px-5 mt-4 inline-flex items-center space-x-2">
                 <input id="checkAll" type="checkbox"
                     class="w-4 h-4 text-[#3030F8] bg-gray-100 border-gray-300 rounded hover:scale-110 focus:ring-[#3030F8] cursor-pointer">

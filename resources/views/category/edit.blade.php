@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_title', 'Blog')
+
 @section('content')
     <div class="container max-w-6xl mx-auto h-auto px-6 py-6 overflow-y-auto">
         <div class="bg-white rounded-xl shadow-md px-8 py-6 h-full">

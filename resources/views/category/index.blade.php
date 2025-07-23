@@ -3,20 +3,24 @@
 @section('page_title', 'blog')
 
 @section('content')
-    <div class="container p-4 bg-white rounded-lg">
-        {{-- Header Action (Add Agenda & Search) --}}
+    <div class="container p-8 bg-white rounded-lg">
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div class="flex gap-4 items-center">
                 <div
-                    class="bg-blue-500 rounded-full w-[180px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
-                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ml-2">
+                    class="mt-[38px] bg-blue-500 rounded-full  w-[100px] h-[38px] p-[36px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
+                    {{-- Icon Section --}}
+                    <div class="w-[40px] h-[40px] bg-white rounded-full border border-white flex items-center justify-center ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 text-blue-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
+
                     </div>
-                    <a href="{{ route('category.create') }}" class="text-sm font-semibold text-white px-3">
-                        Add kategori
+
+                    {{-- Text Section --}}
+                    <a href="{{ route('posts.create') }}"
+                        class="text-sm font-normal leading-[130%] text-white px-3 py-[11px]">
+                        Add category
                     </a>
                 </div>
             </div>
@@ -41,20 +45,10 @@
             </div>
         </div>
 
-        {{-- Checkbox Pilih Semua --}}
-        <div class="mb-6">
-            <label class="px-5 inline-flex items-center space-x-2">
-                <input id="checkAll" type="checkbox"
-                    class="w-4 h-4 text-[#3030F8] bg-gray-100 border-gray-300 rounded hover:scale-110 focus:ring-[#3030F8] cursor-pointer">
-                <span class="text-sm font-semibold text-gray-700">Pilih semua</span>
-            </label>
-        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($categories as $post)
                 <div class="relative rounded-xl shadow-xl h-[467px] overflow-hidden bg-white group">
-                    <!-- Checkbox -->
-                    <input type="checkbox" name="selected_posts[]" value="{{ $post->id }}"
-                        class="item-checkbox w-4 h-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 absolute top-5 right-10">
 
 
                     <!-- Gambar -->

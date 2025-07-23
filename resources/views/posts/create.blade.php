@@ -55,8 +55,9 @@
                     </div>
                 </div>
 
+
                 {{-- Upload Image --}}
-                <div class="w-full max-w-4xl mx-auto mt-10">
+                <div class="w-full max-w-xl mt-10">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image (Max Size: 750kb)</label>
 
                     {{-- Area Upload --}}
@@ -66,10 +67,10 @@
                         {{-- Icon & Text --}}
                         <label id="upload-placeholder" for="image"
                             class="flex flex-col items-center space-y-3 text-gray-500 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 16V4m10 12V4m-5 16l-5-5m10 0l-5 5" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 16.5V9.75m0 0l3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                             </svg>
                             <span class="text-center text-sm">Drag and drop a file here or click</span>
                         </label>
@@ -81,13 +82,19 @@
                         {{-- Preview Image (inside box) --}}
                         <img id="image-preview" src="#" alt="Preview"
                             class="absolute inset-0 w-full h-full object-contain rounded-xl hidden z-10" />
+
+                        {{-- Tambahkan ini untuk Remove Button --}}
+                        <button id="remove-btn" type="button" onclick="removeImage()"
+                            class="absolute top-2 right-2 z-20 hidden bg-red-500 text-white p-1 rounded-full hover:bg-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
-
-
-
                 {{-- Tombol Submit --}}
-                <div class="text-right">
+                <div class="text-left">
                     <button type="submit"
                         class="bg-[#6F4FF2] hover:bg-[#523dc2] text-white font-semibold text-[14px] px-6 py-2 rounded shadow-lg">
                         Save
@@ -96,6 +103,47 @@
             </div>
         </form>
     </div>
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const previewImage = document.getElementById("image-preview");
+            const placeholder = document.getElementById("upload-placeholder");
+            const removeBtn = document.getElementById("remove-btn");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove("hidden");
+                    removeBtn.classList.remove("hidden");
+                    placeholder.classList.add("hidden");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Fungsi baru untuk remove image
+        function removeImage() {
+            const previewImage = document.getElementById("image-preview");
+            const placeholder = document.getElementById("upload-placeholder");
+            const fileInput = document.getElementById("image");
+            const removeBtn = document.getElementById("remove-btn");
+
+            previewImage.src = "#";
+            previewImage.classList.add("hidden");
+            removeBtn.classList.add("hidden");
+            placeholder.classList.remove("hidden");
+            fileInput.value = "";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar) {
+                sidebar.classList.add("hidden");
+            }
+        });
+    </script>
+
 @endsection
 
 @section('scripts')
@@ -112,27 +160,85 @@
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
 
     <script>
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const previewImage = document.getElementById("image-preview");
-            const placeholder = document.getElementById("upload-placeholder");
+        function handleImageUpload(event) {
+            const input = event.target;
+            const file = input.files[0];
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewImage.classList.remove("hidden");
-                    placeholder.classList.add("hidden"); // sembunyikan icon+teks
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file (JPEG, PNG)');
+                return;
             }
+
+            // Validate file size (750KB = 750000 bytes)
+            if (file.size > 750000) {
+                alert('File size exceeds 750KB limit');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Show preview
+                const preview = document.getElementById('image-preview');
+                preview.src = e.target.result;
+
+                // Update UI
+                document.getElementById('upload-placeholder').classList.add('hidden');
+                document.getElementById('image-preview-container').classList.remove('hidden');
+
+                // Show file info
+                document.getElementById('file-info').textContent =
+                    `${file.name} (${Math.round(file.size/1024)}KB)`;
+            };
+
+            reader.readAsDataURL(file);
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const sidebar = document.getElementById("sidebar");
-            if (sidebar) {
-                sidebar.classList.add("hidden");
+        function removeImage() {
+            // Reset file input
+            document.getElementById('image-upload').value = '';
+
+            // Hide preview
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('upload-placeholder').classList.remove('hidden');
+
+            // Clear preview image
+            document.getElementById('image-preview').src = '#';
+            document.getElementById('file-info').textContent = '';
+        }
+
+        // Drag and drop functionality
+        const uploadBox = document.getElementById('upload-box');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('border-indigo-500', 'bg-gray-50');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('border-indigo-500', 'bg-gray-50');
+            });
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length) {
+                document.getElementById('image-upload').files = files;
+                handleImageUpload({
+                    target: document.getElementById('image-upload')
+                });
             }
         });
     </script>
+
+
 @endsection

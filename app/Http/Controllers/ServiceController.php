@@ -18,12 +18,12 @@ class ServiceController extends Controller
         }
 
         $services = $query->latest()->get();
-        return view('service.index', compact('services'));
+        return view('services.index', compact('services'));
     }
 
     public function create()
     {
-        return view('service.create');
+        return view('services.create');
     }
 
     public function store(Request $request)

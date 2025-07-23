@@ -8,15 +8,21 @@
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div class="flex gap-4 items-center">
                 <div
-                    class="bg-blue-500 rounded-full w-[180px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
-                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ml-2">
+                    class="mt-[38px] bg-blue-500 rounded-full  w-[100px] h-[38px] p-[36px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
+                    {{-- Icon Section --}}
+                    <div
+                        class="w-[40px] h-[40px] bg-white rounded-full border border-white flex items-center justify-center ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 text-blue-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
+
                     </div>
-                    <a href="{{ route('agenda.create') }}" class="text-sm font-semibold text-white px-3">
-                        Add Agenda
+
+                    {{-- Text Section --}}
+                    <a href="{{ route('agenda.create') }}"
+                        class="text-sm font-normal leading-[130%] text-white px-3 py-[11px]">
+                        Add agenda
                     </a>
                 </div>
             </div>

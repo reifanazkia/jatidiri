@@ -95,7 +95,7 @@
     <!-- Sidebar -->
     <div class=" flex justify-between gap-4  w-full h-full">
         <nav id="sidebar"
-            class="scroll p-5 rounded-b-xl transition-all duration-500 ease-in-out transform -translate-x-full opacity-0 hidden w-[250px] min-h-full mb-5 bg-white shadow-lg">
+            class="scroll p-5 rounded-b-lg transition-all duration-500 ease-in-out transform -translate-x-full opacity-0 hidden w-[250px] min-h-full mb-5 bg-white shadow-md">
             <ul class="mb-60">
                 <!-- Home Item -->
                 <li class="mt-5">
@@ -265,9 +265,9 @@
         </nav>
 
         <main id="mainContent"
-            class="flex-1 py-2 px-6 bg-[#D7D7FE] min-h-screen transition-all duration-500 ease-in-out">
+            class="flex-1 p-[32px] bg-gray-800 min-h-screen transition-all duration-500 ease-in-out">
             <!-- Konten Putih -->
-            <div class="bg-[#D7D7FE] p-1 rounded-xl">
+            <div class="bg-[#D7D7FE] rounded-xl">
                 @yield('content')
                 @yield('script')
             </div>
