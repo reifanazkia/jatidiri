@@ -27,7 +27,7 @@ class LegalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'reqired|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'image' => 'required|image|max:750'
 
@@ -40,7 +40,7 @@ class LegalController extends Controller
         }
 
         Legal::create($data);
-        return back()->with('success', 'Data Berhasil Di Tambahkan');
+        return redirect()->route('legal.index')->with('success', 'Data Berhasil Di Tambahkan');
     }
 
     public function show($id)
@@ -61,9 +61,9 @@ class LegalController extends Controller
         $legals = Legal::findOrFail($id);
 
         $request->validate([
-            'title' => 'reqired|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'image' => 'required|image|max:750'
+            'image' => 'nullable|image|max:750'
 
         ]);
 

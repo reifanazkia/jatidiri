@@ -20,13 +20,13 @@ class WhyController extends Controller
 
         $why = $query->latest()->get();
 
-        return view('why_service.index', compact('why'));
+        return view('why.index', compact('why'));
     }
 
     public function create()
     {
         $services = Service::all();
-        return view('why_service.create', compact('services'));
+        return view('why.create', compact('services'));
     }
 
     public function store(Request $request)
@@ -46,6 +46,8 @@ class WhyController extends Controller
             $data['image'] = $request->file('image')->store('why', 'public');
         }
 
+
+
         Why::create($data);
 
         return redirect()->route('why.index')->with('success', 'Data berhasil ditambahkan.');
@@ -54,14 +56,14 @@ class WhyController extends Controller
     public function show($slug)
     {
         $why = Why::where('slug', $slug)->firstOrFail();
-        return view('why_service.show', compact('why'));
+        return view('why.show', compact('why'));
     }
 
     public function edit($id)
     {
         $why = Why::findOrFail($id);
         $services = Service::all();
-        return view('why_service.edit', compact('why', 'services'));
+        return view('why.edit', compact('why', 'services'));
     }
 
     public function update(Request $request, $id)
@@ -120,9 +122,9 @@ class WhyController extends Controller
             $item->delete();
         }
 
-        return response()->json(['message' => 'Semua data berhasil dihapus.']);
+        return redirect()->route('why.index')
+            ->with('success', 'Selected items deleted successfully');
     }
-
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {

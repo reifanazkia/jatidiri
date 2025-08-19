@@ -18,7 +18,7 @@ class PartnerController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $partners = $query->latest()->get();
+        $partners = $query->latest()->paginate(12);
 
         return view('partners.index', compact('partners'));
     }
@@ -50,7 +50,7 @@ class PartnerController extends Controller
 
         Partner::create($data);
 
-        return redirect()->route('partner.index')->with('success', 'Partner berhasil ditambahkan.');
+        return redirect()->route('partners.index')->with('success', 'Partner berhasil ditambahkan.');
     }
 
     // Tampilkan detail partner berdasarkan slug
@@ -96,7 +96,7 @@ class PartnerController extends Controller
 
         $partner->update($data);
 
-        return redirect()->route('partner.index')->with('success', 'Partner berhasil diperbarui.');
+        return redirect()->route('partners.index')->with('success', 'Partner berhasil diperbarui.');
     }
 
     // Hapus partner dan gambar
@@ -110,7 +110,12 @@ class PartnerController extends Controller
 
         $partner->delete();
 
-        return redirect()->route('partner.index')->with('success', 'Partner berhasil dihapus.');
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('partners.index')
+            ->with('success', 'Partner berhasil dihapus.');
     }
 
     // Upload gambar dari CKEditor

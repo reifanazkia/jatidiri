@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pricing;
+use App\Models\Program;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -22,6 +23,13 @@ class PricingController extends Controller
 
         return view('pricing.index', compact('pricing'));
     }
+
+   public function create()
+{
+    $programs = Program::all(); // Assuming you have a Program model
+    return view('pricing.create', compact('programs'));
+}
+
 
     // Simpan agenda baru
     public function store(Request $request)
@@ -53,6 +61,14 @@ class PricingController extends Controller
         $pricing = Pricing::where('slug', $slug)->firstOrFail();
         return view('pricing.show', compact('pricing'));
     }
+
+    // Tampilkan form edit pricing
+    public function edit($id)
+{
+    $pricing = Pricing::findOrFail($id);
+    $programs = Program::all();
+    return view('pricing.edit', compact('pricing', 'programs'));
+}
 
     // Update agenda
     public function update(Request $request, $id)
@@ -142,6 +158,5 @@ class PricingController extends Controller
         }
 
         return response()->json(['message' => 'Post berhasil dihapus.']);
-}
-
+    }
 }

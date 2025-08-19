@@ -12,13 +12,13 @@ class HeaderController extends Controller
     public function index()
     {
         $headers = Header::latest()->get();
-        return view('admin.header.index', compact('headers'));
+        return view('header.index', compact('headers'));
     }
 
     public function edit($id)
     {
         $header = Header::findOrFail($id);
-        return view('admin.header.edit', compact('header'));
+        return view('header.edit', compact('header'));
     }
 
     public function update(Request $request, $id)
@@ -28,7 +28,7 @@ class HeaderController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'meta_desc' => 'nullable|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->only('title', 'meta_desc');

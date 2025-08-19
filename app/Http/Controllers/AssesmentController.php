@@ -21,15 +21,18 @@ class AssesmentController extends Controller
             });
         }
 
-        $facilities = $query->latest()->get();
+        $facilities = $query->latest()->paginate(3);
 
         return view('assesment.index', compact('facilities'));
     }
 
     public function create()
-    {
-        return view('assesment.create');
-    }
+{
+    $data = Assesment::all(); // atau model lain yang sesuai
+
+    return view('assesment.create', compact('data'));
+}
+
 
     public function store(Request $request)
     {
@@ -62,7 +65,8 @@ class AssesmentController extends Controller
     public function edit($id)
     {
         $facilities = Assesment::findOrFail($id);
-        return view('assesment.edit', compact('facilities'));
+        $programs = Assesment::all();
+        return view('assesment.edit', compact('facilities', 'programs'));
     }
 
     public function update(Request $request, string $id)
