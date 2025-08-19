@@ -8,43 +8,56 @@ use Illuminate\Support\Facades\Storage;
 
 class VisiController extends Controller
 {
+    public function index()
+    {
+        $visis = Visi::latest()->get(); // atau ->paginate(10) jika ingin pagination
+        return view('visi.index', compact('visis'));
+    }
 
-    public function update(Request $request, $id)
+    public function edit($id)
     {
         $visi = Visi::findOrFail($id);
+        return view('visi.edit', compact('visi'));
+    }
 
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'visi' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-        ]);
+    public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'subtitle' => 'nullable|string|max:255',
+        'visi' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:750',
+    ]);
 
-        $data = $request->except(['image']);
+    $visi = Visi::findOrFail($id);
 
-        if ($request->hasFile('image')) {
-            if ($visi->image && Storage::disk('public')->exists($visi->image)) {
-                Storage::disk('public')->delete($visi->image);
-            }
-            $data['image'] = $request->file('image')->store('visis', 'public');
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama jika ada
+        if ($visi->image) {
+            Storage::delete($visi->image);
         }
 
-        $visi->update($data);
-
-        return redirect()->route('visis.index')->with('success', 'Data visi berhasil diperbarui.');
+        $validated['image'] = $request->file('image')->store('visi-images');
     }
+
+    $visi->update($validated);
+
+    // Redirect dengan data fresh dari database
+    return redirect()->route('visi.index', $visi->id)
+        ->with('success', 'Visi updated successfully')
+        ->with('visi', $visi->fresh()); // Ambil data terbaru dari database
+}
 
     public function destroy($id)
     {
-        $visi = Visi::findOrFail($id);
+        $visis = Visi::findOrFail($id);
 
-        if ($visi->image && Storage::disk('public')->exists($visi->image)) {
-            Storage::disk('public')->delete($visi->image);
+        if ($visis->image && Storage::disk('public')->exists($visis->image)) {
+            Storage::disk('public')->delete($visis->image);
         }
 
-        $visi->delete();
+        $visis->delete();
 
-        return redirect()->route('visis.index')->with('success', 'Data visi berhasil dihapus.');
+        return redirect()->route('visi.index')->with('success', 'Data visi berhasil dihapus.');
     }
-
 }

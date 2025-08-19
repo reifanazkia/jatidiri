@@ -25,7 +25,7 @@ class DukunganController extends Controller
         return view('dukungan.index', compact('data'));
     }
 
-    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -44,7 +44,7 @@ class DukunganController extends Controller
             'name' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'id_yt' => 'nullable|string|max:255',
-            'image' => 'required|image|max:755'
+            'image' => 'nullable|image|max:755'
         ]);
 
         if ($request->hasFile('image')) {
@@ -54,7 +54,7 @@ class DukunganController extends Controller
         $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
 
         Dukungan::create($data);
-        return back()->with('success', 'Data Berhasil Di Tambahkan');
+        return redirect()->route('dukungan.index')->with('success', 'Data Berhasil Di Tambahkan');
     }
 
     /**
@@ -100,7 +100,7 @@ class DukunganController extends Controller
 
         $dukungan->update($data);
 
-        return back()->with('success', 'Data Berhasil Di Perbarui');
+        return redirect()->route('dukungan.index')->with('success', 'Data Berhasil Di Perbarui');
     }
 
     /**

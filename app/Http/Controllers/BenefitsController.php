@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Benefits;
+use App\Models\Assesment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,14 +18,16 @@ class BenefitsController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        $benefits = $query->latest()->get();
+        $benefits = $query->latest()->paginate(3);
         return view('benefits.index', compact('benefits'));
     }
 
     public function create()
     {
-        return view('benefits.create');
+        $facilities = Assesment ::all(); // Pastikan ini mengambil data program, bukan benefit
+        return view('benefits.create', compact('facilities'));
     }
+
 
     public function show($slug)
     {
@@ -35,7 +38,9 @@ class BenefitsController extends Controller
     public function edit($id)
     {
         $benefit = Benefits::findOrFail($id);
-        return view('benefits.edit', compact('benefit'));
+        $facilities = Benefits::all(); // Assuming you have a Facility model
+
+        return view('benefits.edit', compact('benefit', 'facilities'));
     }
 
     public function store(Request $request)
@@ -63,7 +68,8 @@ class BenefitsController extends Controller
             'image'       => $imagePath,
         ]);
 
-        return redirect()->back()->with('success', 'Benefit berhasil ditambahkan.');
+        // Redirect ke halaman index benefits dengan pesan sukses
+        return redirect()->route('benefits.index')->with('success', 'Benefit berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
@@ -115,7 +121,8 @@ class BenefitsController extends Controller
 
         while (Benefits::where('slug', $uniqueSlug)
             ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()) {
+            ->exists()
+        ) {
             $uniqueSlug = $slug . '-' . $i++;
         }
 
@@ -133,5 +140,25 @@ class BenefitsController extends Controller
                 'url' => asset('storage/' . $path),
             ]);
         }
+    }
+
+    public function editTitle($id)
+    {
+        $benefit = Benefits::findOrFail($id);
+        return view('benefits.editTitle', compact('benefit'));
+    }
+
+    public function updateTitle(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|unique:benefits,title,' . $id,
+        ]);
+
+        $benefit = Benefits::findOrFail($id);
+        $benefit->title = $request->title;
+        $benefit->slug  = $this->generateUniqueSlug(Str::slug($request->title), $id);
+        $benefit->save();
+
+        return redirect()->route('benefits.index')->with('success', 'Judul berhasil diperbarui.');
     }
 }

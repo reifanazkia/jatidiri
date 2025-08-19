@@ -31,7 +31,7 @@ class ActivityController extends Controller
     public function create()
     {
         $services = Service::all();
-        return view('activity.create', compact('service'));
+        return view('activity.create', compact('services'));
     }
 
     /**
@@ -47,7 +47,8 @@ class ActivityController extends Controller
 
         ]);
 
-        $slug = $this->generateUniqueSlug(Str::slug($$request->title));
+
+        $slug = $this->generateUniqueSlug(Str::slug($request->title));
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -80,9 +81,9 @@ class ActivityController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Activity::findOrFail($id);
+        $activity = Activity::findOrFail($id); // Changed variable name to $activity for consistency
         $services = Service::all();
-        return view('activity.create', compact('service'));
+        return view('activity.edit', compact('activity', 'services'));
     }
 
     /**
@@ -118,7 +119,7 @@ class ActivityController extends Controller
             'image' => $data->image,
         ]);
 
-        return redirect()->route('bonus.index')->with('success', 'Data berhasil diperbarui.');
+        return redirect()->route('activity.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -128,15 +129,15 @@ class ActivityController extends Controller
     {
         $data = Activity::findOrFail($id);
 
-         if ($data->image && Storage::disk('public')->exists($data->image)) {
-                Storage::disk('public')->delete($data->image);
-            }
+        if ($data->image && Storage::disk('public')->exists($data->image)) {
+            Storage::disk('public')->delete($data->image);
+        }
 
-            $data->delete();
+        $data->delete();
 
-            return redirect()->route('activity.index')->with('success', 'Data Berhasil Di Hapus');
+        return redirect()->route('activity.index')->with('success', 'Data Berhasil Di Hapus');
     }
-  public function bulkDelete(Request $request)
+    public function bulkDelete(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
 
@@ -177,5 +178,4 @@ class ActivityController extends Controller
 
         return $uniqueSlug;
     }
-
 }

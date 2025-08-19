@@ -24,7 +24,7 @@ class AboutController extends Controller
     // Tampilkan form tambah
     public function create()
     {
-        return view('abouts.create');
+        return view('about.create');
     }
 
     // Simpan data baru
@@ -84,7 +84,7 @@ class AboutController extends Controller
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
-            'image1' => 'required|image|max:2048',
+            'image1' => 'nullable|image|max:2048',
             'image2' => 'nullable|image|max:2048',
             'video' => 'nullable|mimes:mp4,webm,ogg|max:51200',
         ]);

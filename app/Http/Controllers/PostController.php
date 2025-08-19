@@ -25,7 +25,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->latest()->paginate(3);
+        $posts = $query->latest()->paginate(6);
         return view('posts.index', compact('posts'));
     }
 
@@ -44,22 +44,30 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'        => 'required',
-            'description'  => 'nullable',
-            'content'      => 'nullable',
-            'category_id'  => 'required|exists:categories,id',
-            'image'        => 'nullable|image|max:750',
-            'pub_date'     => 'required|date',
+            'title' => 'required',
+            'resume' => 'nullable',
+            'content' => 'nullable',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|max:750',
+            'publish_date' => 'required|date',
         ]);
 
-        $validated['slug'] = $this->generateUniqueSlug(Str::slug($request->title));
-        $validated['user_id'] = Auth::id();
+        // Mapping ke field database
+        $postData = [
+            'title' => $validated['title'],
+            'description' => $validated['resume'], // Map resume ke description
+            'content' => $validated['content'],
+            'category_id' => $validated['category_id'],
+            'pub_date' => $validated['publish_date'], // Map publish_date ke pub_date
+            'user_id' => Auth::id()
+        ];
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('post', 'public');
+            $postData['image'] = $request->file('image')->store('post', 'public');
         }
 
-        Post::create($validated);
+        // Biarkan model yang handle slug generation
+        Post::create($postData);
 
         return redirect()->route('posts.index')->with('success', 'Post berhasil ditambahkan.');
     }
@@ -115,10 +123,13 @@ class PostController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        $request->validate(['ids' => 'required|array']);
+        $ids = json_decode($request->ids, true);
 
-        $posts = Post::whereIn('id', $request->ids)->get();
+        if (!is_array($ids) || empty($ids)) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
 
+        $posts = Post::whereIn('id', $ids)->get();
         foreach ($posts as $post) {
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
@@ -126,8 +137,9 @@ class PostController extends Controller
             $post->delete();
         }
 
-        return response()->json(['message' => 'Post berhasil dihapus.']);
+        return back()->with('success', 'Post berhasil dihapus.');
     }
+
 
     protected function generateUniqueSlug($slug, $ignoreId = null)
     {

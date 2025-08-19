@@ -17,7 +17,7 @@ class ServiceController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $services = $query->latest()->get();
+        $services = $query->latest()->paginate(10); // Ganti get() dengan paginate()
         return view('service.index', compact('services'));
     }
 

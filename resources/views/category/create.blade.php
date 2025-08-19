@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('page_title', 'Blog')
+@section('page_title', 'Category')
 
 @section('content')
     {{-- Pindahkan CKEditor ke section scripts --}}
-    <div class="container mt-[32px] p-[32px] max-h-auto max-w-auto bg-white rounded-[16px] shadow-md">
-        <h2 class="text-[24px] font-medium px-[18px] mb-[32px]">Add</h2>
+    <div class="container p-[32px] max-h-auto max-w-auto bg-white rounded-[24px] shadow-md">
+        <h2 class="text-[24px] font-medium px-[18px] p-8">Add</h2>
 
         <form action="{{ route('category.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
@@ -14,16 +14,16 @@
                 {{-- Title --}}
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-                    <input id="title" name="title" type="text" placeholder="Name category"
+                    <input id="name" name="name" type="text" placeholder="Name category"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200" />
                 </div>
                 {{-- Upload Image --}}
-                <div class="w-full max-w-4xl mt-10">
+                <div class="w-full max-w-full mt-10">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image (Max Size: 750kb)</label>
 
                     {{-- Area Upload --}}
                     <div id="upload-box"
-                        class="relative flex justify-center items-center w-full border-2 border-dashed border-gray-300 rounded-xl h-60 cursor-pointer bg-white">
+                        class="relative flex justify-center items-center w-[50%] border border-gray-300 rounded-xl h-60 cursor-pointer bg-white">
 
                         {{-- Icon & Text --}}
                         <label id="upload-placeholder" for="image"
@@ -49,7 +49,11 @@
 
 
                 {{-- Tombol Submit --}}
-                <div class="text-right">
+                <div class="flex justify-between items-center">
+                    <a href="{{ route('category.index') }}"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-[14px] px-6 py-2 rounded shadow-lg">
+                        Back
+                    </a>
                     <button type="submit"
                         class="bg-[#6F4FF2] hover:bg-[#523dc2] text-white font-semibold text-[14px] px-6 py-2 rounded shadow-lg">
                         Save
@@ -58,14 +62,6 @@
             </div>
         </form>
     </div>
-@endsection
-
-@section('scripts')
-
-
-    {{-- Trix Editor (kalau kamu masih pakai) --}}
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
-    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
 
     <script>
         function previewImage(event) {
@@ -92,3 +88,10 @@
         });
     </script>
 @endsection
+
+
+
+
+{{-- Trix Editor (kalau kamu masih pakai)
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script> --}}

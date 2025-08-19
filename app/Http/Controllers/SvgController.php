@@ -11,23 +11,37 @@ class SvgController extends Controller
     public function statistik()
     {
         $data = Svg::first(); // Ambil satu-satunya data
-        return view('admin.statistik.index', compact('data'));
+        return view('statistik.index', compact('data'));
     }
 
     // Halaman edit lengkap
     public function edit($id)
     {
         $data = Svg::findOrFail($id);
-        return view('admin.svg.edit', compact('data'));
+        return view('svg.edit', compact('data'));
     }
 
     // Proses update
     public function update(Request $request, $id)
     {
         $request->validate([
+            // Data section validation
             'title1' => 'required|string',
-            'data1'  => 'required|numeric',
-            // dst. jika kamu mau tambahkan validasi lain
+            'title2' => 'required|string',
+            'title3' => 'required|string',
+            'title4' => 'required|string',
+            'value1' => 'required|numeric',
+            'value2' => 'required|numeric',
+            'value3' => 'required|numeric',
+            'value4' => 'required|numeric',
+
+            // Values section validation
+            'value1' => 'required|string',
+            'value2' => 'required|string',
+            'value3' => 'required|string',
+            'value4' => 'required|string',
+            'value5' => 'required|string',
+            'value6' => 'required|string',
         ]);
 
         $svg = Svg::findOrFail($id);

@@ -73,7 +73,7 @@ class BonusController extends Controller
             'service_id' => 'required|exists:services,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $slug = $this->generateUniqueSlug(Str::slug($request->title), $data->id);
@@ -99,17 +99,36 @@ class BonusController extends Controller
     }
 
     public function destroy($id)
-    {
+{
+    try {
         $data = Bonus::findOrFail($id);
 
-        if ($data->image && Storage::disk('public')->exists($data->image)) {
-            Storage::disk('public')->delete($data->image);
+        // Delete the image if it exists
+        if ($data->image) {
+            // Remove 'storage/' prefix if it exists
+            $imagePath = str_replace('storage/', '', $data->image);
+
+            // Check if file exists in storage
+            if (Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
         }
 
         $data->delete();
 
-        return redirect()->route('bonus.index')->with('success', 'Data berhasil dihapus.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Bonus service deleted successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete bonus service: ' . $e->getMessage()
+        ], 500);
     }
+}
+
 
     public function bulkDelete(Request $request)
     {

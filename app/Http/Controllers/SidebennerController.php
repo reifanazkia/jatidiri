@@ -21,15 +21,17 @@ class SidebennerController extends Controller
         $data = SideBenner::findOrFail($id);
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:750',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:750', // changed from required to nullable
             'link' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
             if ($data->image && file_exists(public_path('uploads/sidebanner/' . $data->image))) {
                 unlink(public_path('uploads/sidebanner/' . $data->image));
             }
 
+            // Upload gambar baru
             $file = $request->file('image');
             $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/sidebanner'), $filename);

@@ -35,24 +35,20 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|unique:categories,name',
+            'name' => 'required|unique:categories,name',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $slug = $this->generateUniqueSlug(Str::slug($request->name));
-        $imagePath = null;
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('categories', 'public');
-        }
+        $imagePath = $request->file('image')->store('categories', 'public');
 
         Category::create([
-            'name'  => $request->name,
-            'slug'  => $slug,
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'image' => $imagePath,
         ]);
 
-        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
+        // Pastikan redirect ke route dengan prefix yang benar
+        return redirect()->route('category.index')->with('success', 'Category created!');
     }
 
     public function edit($id)

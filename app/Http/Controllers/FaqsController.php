@@ -33,14 +33,14 @@ class FaqsController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'content' => 'required|string'
+            'description' => 'required|string'
         ]);
 
-        $data['slug'] = $this->generateUniqueSlug(Str::slug($data['title']));
+
 
         Faqs::create($data);
 
-        return back()->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('faqs.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function show(string $slug)
@@ -51,9 +51,9 @@ class FaqsController extends Controller
 
     public function edit(string $id)
     {
-        $data = Faqs::findOrFail($id);
+        $faq = Faqs::findOrFail($id);
         $categories = Category::all();
-        return view('faqs.edit', compact('data', 'categories'));
+        return view('faqs.edit', compact('faq', 'categories'));
     }
 
     public function update(Request $request, string $id)
@@ -63,14 +63,12 @@ class FaqsController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'content' => 'required|string'
+            'description' => 'required|string'
         ]);
-
-        $data['slug'] = $this->generateUniqueSlug(Str::slug($data['title']), $faq->id);
 
         $faq->update($data);
 
-        return back()->with('success', 'Data berhasil diperbarui');
+        return redirect()->route('faqs.index')->with('success', 'Data berhasil diperbarui');
     }
 
     public function destroy(string $id)
@@ -102,18 +100,6 @@ class FaqsController extends Controller
         return response()->json(['error' => 'No file uploaded'], 400);
     }
 
-    protected function generateUniqueSlug($slug, $ignoreId = null)
-    {
-        $uniqueSlug = $slug;
-        $i = 1;
 
-        while (Faqs::where('slug', $uniqueSlug)
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()) {
-            $uniqueSlug = $slug . '-' . $i++;
-        }
-
-        return $uniqueSlug;
-    }
 }
 

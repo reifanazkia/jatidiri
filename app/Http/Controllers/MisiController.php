@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Storage;
 
 class MisiController extends Controller
 {
+
+    public function edit($id)
+    {
+        $misi = Misi::findOrFail($id);
+        return view('misi.edit', compact('misi'));
+    }
+
     public function update(Request $request, $id)
     {
         $misi = Misi::findOrFail($id);
@@ -30,7 +37,7 @@ class MisiController extends Controller
 
         $misi->update($data);
 
-        return redirect()->route('misis.index')->with('success', 'Data misi berhasil diperbarui.');
+        return redirect()->route('misi.index')->with('success', 'Data misi berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -43,7 +50,6 @@ class MisiController extends Controller
 
         $misi->delete();
 
-        return redirect()->route('misis.index')->with('success', 'Data misi berhasil dihapus.');
+        return redirect()->route('misi.index')->with('success', 'Data misi berhasil dihapus.');
     }
-
 }

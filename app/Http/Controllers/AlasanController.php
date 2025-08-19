@@ -24,7 +24,7 @@ class AlasanController extends Controller
             });
         }
 
-        $data = $query->latest()->paginate(5);
+        $data = $query->latest()->get();
         return view('alasan.index', compact('data'));
     }
 
@@ -62,11 +62,11 @@ class AlasanController extends Controller
 
     public function edit($id)
     {
-        $data = Alasan::findOrFail($id);
-        $services = Service::all();
-        return view('alasan.edit', compact('data', 'services'));
-    }
+        $alasan = Alasan::findOrFail($id); // Assuming your model is named Alasan
+        $services = Service::all(); // Assuming you need services for the dropdown
 
+        return view('alasan.edit', compact('alasan', 'services'));
+    }
     public function update(Request $request, $id)
     {
         $data = Alasan::findOrFail($id);

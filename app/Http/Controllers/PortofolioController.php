@@ -7,18 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class PortfolioController extends Controller
+class PortofolioController extends Controller
 {
     public function index()
     {
         $data = Portofolio::with('program',)->latest()->get();
-        return view('admin.portfolio.index', compact('data'));
+        return view('portfolio.index', compact('data'));
     }
 
     public function show($slug)
     {
         $item = Portofolio::with('program')->where('slug', $slug)->firstOrFail();
-        return view('admin.portfolio.show', compact('item'));
+        return view('portfolio.show', compact('item'));
+    }
+
+    public function create()
+    {
+        $programs = \App\Models\Program::all();
+
+        return view('portfolio.create', compact('programs'));
     }
 
     public function store(Request $request)
@@ -45,7 +52,16 @@ class PortfolioController extends Controller
         }
 
         Portofolio::create($validated);
-        return back()->with('success', 'Portfolio ditambahkan.');
+
+        // Ganti dari back() ke redirect ke route index
+        return redirect()->route('portfolio.index')->with('success', 'Portfolio ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $portfolio = Portofolio::findOrFail($id);
+        $programs = \App\Models\Program::all();
+        return view('portfolio.edit', compact('portfolio', 'programs'));
     }
 
     public function update(Request $request, $id)
@@ -79,7 +95,7 @@ class PortfolioController extends Controller
         }
 
         $portfolio->update($validated);
-        return back()->with('success', 'Portfolio diperbarui.');
+        return redirect()->route('portfolio.index')->with('success', 'Portfolio diperbarui.');
     }
 
     public function destroy($id)
@@ -135,8 +151,9 @@ class PortfolioController extends Controller
         $i = 1;
 
         while (Portofolio::where('slug', $uniqueSlug)
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()) {
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()
+        ) {
             $uniqueSlug = $slug . '-' . $i++;
         }
 

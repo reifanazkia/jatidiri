@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="grid grid-cols-1 gap-10 mx-auto p-6 w-full max-w-[1440px]">
+    <div class="grid grid-cols-1 gap-6 mx-auto w-full">
 
         {{-- Card Deskripsi Jatidiri --}}
-        <div class="mx-auto w-full bg-white rounded-xl px-6 py-8 shadow-sm">
+        <div class="mx-auto w-full bg-white rounded-[24px] px-6 py-8 shadow-sm">
             <img src="{{ asset('img/Jatidiri.png') }}" alt="Logo" class="mx-auto w-[458px] h-[189px]">
             <p class="mt-6 text-center text-base leading-relaxed w-[500px] text-[16px] mx-auto text-gray-600">
                 Jatidiri.app adalah platform revolusioner yang menggabungkan teknologi mutakhir dengan layanan psikologi
@@ -16,9 +16,9 @@
         {{-- Kartu Statistik & Diagram --}}
         <div class="flex flex-col lg:flex-row gap-6 w-full">
             {{-- Kolom Statistik Kiri --}}
-            <div class="w-full lg:w-[40%] flex flex-col gap-4">
+            <div class="w-full lg:w-[40%] flex flex-col gap-6">
                 {{-- Kartu 1: Jumlah Pengunjung --}}
-                <div class="bg-white rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm">
+                <div class="bg-white rounded-[24px] p-6 flex flex-col items-center justify-center text-center shadow-sm">
                     <div class="bg-[#C9C4F9] w-12 h-12 flex items-center justify-center rounded-full mb-2">
                         <svg class=" w-6 h-6 text-[#7367F0]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                             fill="currentColor" class="size-6">
@@ -35,7 +35,7 @@
                 </div>
 
                 {{-- Kartu 2: Jumlah Artikel --}}
-                <div class="bg-white rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm">
+                <div class="bg-white rounded-[24px] p-6 flex flex-col items-center justify-center text-center shadow-sm">
                     <div class="bg-[#9DEBC0] w-12 h-12 flex items-center justify-center rounded-full mb-2">
                         <svg class="w-6 h-6 text-[#28C76F]" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -49,10 +49,10 @@
                 </div>
 
                 {{-- Kartu 3: Tahun Akademik --}}
-                <div class="bg-white rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm">
+                <div class="bg-white rounded-[24px] p-6 flex flex-col items-center justify-center text-center shadow-sm">
                     <div class="bg-[#CCE8FD] w-12 h-12 flex items-center justify-center rounded-full mb-2">
-                        <svg class="w-6 h-6 text-[#38A4F8]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
+                        <svg class="w-6 h-6 text-[#38A4F8]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
                         </svg>
@@ -64,10 +64,10 @@
             </div>
 
             {{-- Kolom Diagram Kanan --}}
-            <div class="w-full lg:w-[60%] bg-white rounded-xl px-6 py-8 shadow-xl">
+            <div class="w-full lg:w-[60%] bg-white rounded-[24px] px-6 py-8 shadow-xl">
                 <h3 class="text-center text-[20px] font-normal font-[Outfit]  text-black mb-4">Grafik Pengunjung</h3>
                 <div
-                    class="w-full h-[410px] bg-gradient-to-t from-green-200 via-red-200 to-transparent rounded-lg flex items-end justify-around p-4">
+                    class="w-full h-[410px] to-transparent rounded-lg flex items-end justify-around p-4">
                     {{-- Simulasi batang diagram --}}
                     @php
                         $data = [
@@ -91,4 +91,21 @@
             </div>
         </div>
     </div>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#7367F0',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            });
+        </script>
+    @endif
+
 @endsection

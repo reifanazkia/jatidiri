@@ -15,7 +15,7 @@ class Ourteam extends Model
         'name',
         'fb',
         'ig',
-        't',
+        'tt',
         'phone',
         'email',
         'image',

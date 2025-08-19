@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Agenda;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AgendaController extends Controller
 {
-    // Tampilkan semua agenda + pencarian
     public function index(Request $request)
     {
         $query = Agenda::query();
@@ -18,7 +17,7 @@ class AgendaController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        $agendas = $query->latest()->get();
+        $agendas = $query->latest()->paginate(10);
 
         return view('agenda.index', compact('agendas'));
     }
@@ -28,146 +27,123 @@ class AgendaController extends Controller
         return view('agenda.create');
     }
 
-    // Simpan agenda baru
     public function store(Request $request)
     {
-        $request->validate([
-            'title'         => 'required|string|max:255',
-            'agendacat'     => 'nullable|string|max:255',
-            'start_date'    => 'required|date',
-            'end_date'      => 'nullable|date',
-            'start_time'    => 'required',
-            'end_time'      => 'nullable',
-            'content'       => 'required',
-            'location'      => 'nullable|string|max:255',
-            'yt_link'       => 'nullable|url',
-            'organizer'     => 'nullable|string|max:255',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'start_time' => 'required',
+            'end_time' => 'nullable',
+            'content' => 'required',
+            'location' => 'nullable|string|max:255',
+            'yt_link' => 'nullable|url',
+            'organizer' => 'nullable|string|max:255',
             'register_link' => 'nullable|url',
-            'contact'       => 'nullable|string|max:255',
-            'image'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'contact' => 'nullable|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->except('image');
-        $baseSlug = Str::slug($request->title);
-        $data['slug'] = $this->generateUniqueSlug($baseSlug);
+        try {
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('agenda', 'public');
+                $validated['image'] = $imagePath;
+            }
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('agenda', 'public');
+            // Generate slug
+            $validated['slug'] = $this->generateUniqueSlug(Str::slug($request->title));
+
+            // Create agenda
+            Agenda::create($validated);
+
+            return redirect()->route('agenda.index')
+                ->with('success', 'Agenda created successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error creating agenda: ' . $e->getMessage());
         }
-
-        Agenda::create($data);
-
-        return redirect()->route('agenda.index')->with('success', 'Agenda berhasil ditambahkan.');
     }
 
-    // Tampilkan detail agenda berdasarkan slug
     public function show($slug)
     {
         $agenda = Agenda::where('slug', $slug)->firstOrFail();
-        return view('admin.agenda.show', compact('agenda'));
+        return view('agenda.show', compact('agenda'));
     }
 
     public function edit($id)
     {
-        $agenda = Agenda::findOrFail($id);
-        return view('admin.agenda.edit', compact('agenda'));
+        $agenda = Agenda::findOrFail($id); // Pastikan model Agenda di-import
+        return view('agenda.edit', compact('agenda'));
     }
 
     public function update(Request $request, $id)
     {
         $agenda = Agenda::findOrFail($id);
 
-        $request->validate([
-            'title'         => 'required|string|max:255',
-            'agendacat'     => 'nullable|string|max:255',
-            'start_date'    => 'required|date',
-            'end_date'      => 'nullable|date',
-            'start_time'    => 'required',
-            'end_time'      => 'nullable',
-            'content'       => 'required',
-            'location'      => 'nullable|string|max:255',
-            'yt_link'       => 'nullable|url',
-            'organizer'     => 'nullable|string|max:255',
-            'register_link' => 'nullable|url',
-            'contact'       => 'nullable|string|max:255',
-            'image'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'content' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // tambahkan validasi untuk field lainnya
         ]);
 
-        $data = $request->except(['image', 'slug']);
-
-        // Slug otomatis jika title berubah
-        if ($agenda->title !== $request->title) {
-            $baseSlug = Str::slug($request->title);
-            $data['slug'] = $this->generateUniqueSlug($baseSlug);
-        }
-
-        // Ganti gambar jika upload baru
+        // Handle image upload
         if ($request->hasFile('image')) {
-            if ($agenda->image && Storage::disk('public')->exists($agenda->image)) {
-                Storage::disk('public')->delete($agenda->image);
+            // Hapus gambar lama jika ada
+            if ($agenda->image && Storage::exists($agenda->image)) {
+                Storage::delete($agenda->image);
             }
-            $data['image'] = $request->file('image')->store('agenda', 'public');
+
+            $path = $request->file('image')->store('agenda_images');
+            $validated['image'] = $path;
+        } elseif ($request->has('remove_image')) {
+            // Hapus gambar jika checkbox dicentang
+            if ($agenda->image && Storage::exists($agenda->image)) {
+                Storage::delete($agenda->image);
+            }
+            $validated['image'] = null;
         }
 
-        $agenda->update($data);
+        $agenda->update($validated);
 
-        return redirect()->route('agenda.index')->with('success', 'Agenda berhasil diperbarui.');
+        return redirect()->route('agenda.index')->with('success', 'Agenda berhasil diperbarui');
     }
 
-
-    // Hapus agenda dan gambarnya
     public function destroy($id)
-    {
+{
+    try {
         $agenda = Agenda::findOrFail($id);
 
-        if ($agenda->image && Storage::disk('public')->exists($agenda->image)) {
-            Storage::disk('public')->delete($agenda->image);
+        // Hapus file gambar jika ada
+        if ($agenda->image && Storage::exists('public/' . $agenda->image)) {
+            Storage::delete('public/' . $agenda->image);
         }
 
         $agenda->delete();
 
-        return redirect()->route('agenda.index')->with('success', 'Agenda dan gambarnya berhasil dihapus.');
+        return redirect()->route('agenda.index')
+            ->with('success', 'Agenda deleted successfully');
+    } catch (\Exception $e) {
+        return redirect()->route('agenda.index')
+            ->with('error', 'Error deleting agenda: '.$e->getMessage());
     }
+}
 
-    public function bulkDelete(Request $request)
-    {
-        $request->validate(['ids' => 'required|array']);
-
-        $agendas = Agenda::whereIn('id', $request->ids)->get();
-
-        foreach ($agendas as $post) {
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $post->delete();
-        }
-
-        return response()->json(['message' => 'Post berhasil dihapus.']);
-    }
-
-
-    // Upload gambar/video dari CKEditor
-    public function upload(Request $request)
-    {
-        if ($request->hasFile('upload')) {
-            $file = $request->file('upload');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('uploads/agenda', $filename, 'public');
-
-            return response()->json([
-                'url' => asset('storage/' . $path),
-            ]);
-        }
-    }
-
-    // Generate slug unik jika sudah ada yang sama
     protected function generateUniqueSlug($slug)
     {
-        $uniqueSlug = $slug;
-        $i = 1;
-        while (Agenda::where('slug', $uniqueSlug)->exists()) {
-            $uniqueSlug = $slug . '-' . $i++;
+        $original = $slug;
+        $count = 1;
+
+        while (Agenda::where('slug', $slug)->exists()) {
+            $slug = "{$original}-" . $count++;
         }
-        return $uniqueSlug;
+
+        return $slug;
     }
 }

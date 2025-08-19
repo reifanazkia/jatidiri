@@ -111,21 +111,18 @@
 
     <!-- SweetAlert Error Handling -->
     @if (session('login_error'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
                 icon: 'error',
                 title: 'Login Gagal',
                 text: '{{ session('login_error') }}',
-                confirmButtonColor: '#d33'
+                confirmButtonColor: '#3030F8',
+                confirmButtonText: 'Coba Lagi'
             });
         </script>
     @endif
 
-
-
     <!-- Script -->
-
     <script>
         function togglePassword() {
             const passwordField = document.getElementById("password");
@@ -138,16 +135,9 @@
             eyeOpen.classList.toggle("hidden", !isHidden);
             eyeSlash.classList.toggle("hidden", isHidden);
         }
-    </script>
 
-
-
-
-
-    {{-- spinner --}}
-    <script>
         // Spinner saat form disubmit
-        document.getElementById('loginForm').addEventListener('submit', function() {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             const btn = document.getElementById("btnSubmit");
             const text = document.getElementById("btnText");
             const spinner = document.getElementById("btnSpinner");
@@ -155,22 +145,31 @@
             spinner.classList.remove("hidden");
             text.classList.add("opacity-0");
             btn.disabled = true;
+
+            // Jika ada error dari server, reset button state
+            @if (session('login_error'))
+                setTimeout(() => {
+                    spinner.classList.add("hidden");
+                    text.classList.remove("opacity-0");
+                    btn.disabled = false;
+                }, 500);
+            @endif
         });
+
+        // Handle form submission errors
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                html: `
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                `,
+                confirmButtonColor: '#3030F8',
+                confirmButtonText: 'Mengerti'
+            });
+        @endif
     </script>
-
-    {{-- sweet alert --}}
-    <!-- SweetAlert2 CDN (di <head> atau sebelum </body>) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        // Ambil elemen sekali saja
-        const form = document.getElementById('loginForm');
-        const btn = document.getElementById("btnSubmit");
-        const text = document.getElementById("btnText");
-        const spinner = document.getElementById("btnSpinner");
-    </script>
-
-
 </body>
-
 </html>

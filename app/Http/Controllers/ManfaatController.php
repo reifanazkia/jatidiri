@@ -12,20 +12,23 @@ class ManfaatController extends Controller
 {
     public function index(Request $request)
     {
-        $seacrh = $request->input('search');
+        $search = $request->input('search');
 
         $data = Manfaat::with('service')
-            ->when($seacrh, function ($query, $seacrh) {
-                $query->where('title', 'like', '%' . $seacrh . '%');
-            });
+            ->when($search, function ($query, $search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            })
+            ->get();
 
-        return view('manfaat.index', compact('data', 'search'));
+        $services = Service::all();
+
+        return view('manfaat.index', compact('data', 'services', 'search'));
     }
 
     public function create()
     {
-        $service = Service::all();
-        return view('manfaat.index', compact('service'));
+        $services = Service::all();
+        return view('manfaat.create', compact('services'));
     }
 
     public function store(Request $request)
@@ -35,28 +38,27 @@ class ManfaatController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-
         ]);
 
         $data = $request->except('image');
         $baseSlug = Str::slug($request->title);
         $data['slug'] = $this->generateUniqueSlug($baseSlug);
 
-        if ($request->hasFile('imgae')) {
+        if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('manfaat', 'public');
         }
 
         Manfaat::create($data);
 
-        return redirect()->route('manfaat.index')->with('success', 'Data Berhasil Di Tambahkan');
+        return redirect()->route('manfaat.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     public function edit($id)
     {
         $manfaat = Manfaat::findOrFail($id);
-        $service = Service::all();
+        $services = Service::all();
 
-        return view('manfaat.index', compact('manfaat', 'service'));
+        return view('manfaat.edit', compact('manfaat', 'services'));
     }
 
     public function update(Request $request, $id)
@@ -68,7 +70,6 @@ class ManfaatController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-
         ]);
 
         $data = $request->except('image', 'slug');
@@ -79,7 +80,7 @@ class ManfaatController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            if ($manfaat->image && Storage::disk('image')->exists($manfaat->image)) {
+            if ($manfaat->image && Storage::disk('public')->exists($manfaat->image)) {
                 Storage::disk('public')->delete($manfaat->image);
             }
 
@@ -88,20 +89,20 @@ class ManfaatController extends Controller
 
         $manfaat->update($data);
 
-        return redirect()->route('manfaat.index')->with('success', 'Data Berhasil Di Update');
+        return redirect()->route('manfaat.index')->with('success', 'Data Berhasil Diupdate');
     }
 
     public function destroy($id)
     {
         $manfaat = Manfaat::findOrFail($id);
 
-        if ($manfaat->image && Storage::disk('image')->exists($manfaat->image)) {
+        if ($manfaat->image && Storage::disk('public')->exists($manfaat->image)) {
             Storage::disk('public')->delete($manfaat->image);
         }
 
         $manfaat->delete();
 
-        return redirect()->route('manfaat.index')->with('Data Berhasil Di Hapus');
+        return redirect()->route('manfaat.index')->with('success', 'Data Berhasil Dihapus');
     }
 
     public function bulkDelete(Request $request)
@@ -133,12 +134,12 @@ class ManfaatController extends Controller
         }
     }
 
-    public function generateUniqueSlug($slug)
+    private function generateUniqueSlug($slug)
     {
-        $uniqueslug = $slug;
+        $uniqueSlug = $slug;
         $i = 1;
 
-        while (Manfaat::where('slug', $uniqueslug)->exists()) {
+        while (Manfaat::where('slug', $uniqueSlug)->exists()) {
             $uniqueSlug = $slug . '-' . $i++;
         }
 

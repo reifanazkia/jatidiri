@@ -6,6 +6,7 @@ use App\Models\Unggulan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Program;
 
 class UnggulanController extends Controller
 {
@@ -17,14 +18,27 @@ class UnggulanController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        $unggulans = $query->latest()->get();
-        return view('admin.unggulan.index', compact('unggulans'));
+        $unggulans = $query->latest()->paginate(3);
+        return view('unggulans.index', compact('unggulans'));
     }
 
     public function show($slug)
     {
         $unggulan = Unggulan::with('program')->where('slug', $slug)->firstOrFail();
-        return view('admin.unggulan.show', compact('unggulan'));
+        return view('unggulans.show', compact('unggulan'));
+    }
+
+    public function create()
+    {
+        $programs = Program::all();
+        return view('unggulans.create', compact('programs'));
+    }
+
+    public function edit($id)
+    {
+        $unggulan = Unggulan::findOrFail($id);
+        $programs = Program::all();
+        return view('unggulans.edit', compact('unggulan', 'programs'));
     }
 
     public function store(Request $request)
@@ -46,7 +60,9 @@ class UnggulanController extends Controller
         }
 
         Unggulan::create($data);
-        return back()->with('success', 'Unggulan berhasil ditambahkan');
+
+        // Ubah dari back() ke redirect ke route index
+        return redirect()->route('unggulans.index')->with('success', 'Unggulan berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -73,7 +89,9 @@ class UnggulanController extends Controller
         }
 
         $unggulan->update($data);
-        return back()->with('success', 'Unggulan berhasil diperbarui');
+
+        // Ubah ini dari back() ke redirect ke route index
+        return redirect()->route('unggulans.index')->with('success', 'Unggulan berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -108,6 +126,7 @@ class UnggulanController extends Controller
             $file = $request->file('upload');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('unggulan/ckeditor', $filename, 'public');
+
             return response()->json(['url' => asset('storage/' . $path)]);
         }
     }
@@ -116,11 +135,14 @@ class UnggulanController extends Controller
     {
         $uniqueSlug = $slug;
         $i = 1;
-        while (Unggulan::where('slug', $uniqueSlug)->when($exceptId, function ($q) use ($exceptId) {
-            return $q->where('id', '!=', $exceptId);
-        })->exists()) {
+
+        while (Unggulan::where('slug', $uniqueSlug)
+            ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+            ->exists()
+        ) {
             $uniqueSlug = $slug . '-' . $i++;
         }
+
         return $uniqueSlug;
     }
 }

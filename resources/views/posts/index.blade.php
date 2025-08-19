@@ -2,18 +2,16 @@
 
 @section('page_title', 'Blog & Agenda')
 
-
-
 @section('content')
-    <div class="container p-2 bg-white rounded-">
+    <div class="container p-6 bg-white rounded-[24px]">
         {{-- Header Action (Add Post & Categories) --}}
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-[32px]">
             <div class="flex gap-4 items-center">
                 {{-- Add Post --}}
                 <div
-                    class="bg-blue-500 rounded-full w-[150px] h-[50px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
-                    {{-- Icon Section --}}
-                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center ml-2">
+                    class=" bg-blue-500 rounded-full w-[120px] h-[40px] flex items-center justify-between cursor-pointer hover:bg-blue-600 transition">
+                    <!-- Icon Section -->
+                    <div class="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 text-blue-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -21,9 +19,9 @@
                         </svg>
                     </div>
 
-                    {{-- Text Section --}}
-                    <a href="{{ route('posts.create') }}" class="text-sm font-semibold text-white px-3">
-                        Add Post
+                    <!-- Text Section -->
+                    <a href="{{ route('posts.create') }}" class="text-sm font-normal leading-[130%] text-white px-2 py-4">
+                        Add posts
                     </a>
                 </div>
 
@@ -31,7 +29,7 @@
                 {{-- Categories --}}
                 <a href="{{ route('category.index') }}" class="inline-block">
                     <button type="button"
-                        class="flex items-center bg-blue-500 rounded-full px-5 h-[50px] gap-3 cursor-pointer hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2">
+                        class="flex items-center bg-blue-500 rounded-full px-5 h-[40px] gap-3 cursor-pointer hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2">
                         <p class="text-[15px] text-white">Categories</p>
                         <div class="border-l border-white h-[20px]"></div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -65,54 +63,14 @@
                     Search
                 </button>
             </div>
-
         </div>
-
-        {{-- Checkbox Pilih Semua --}}
-        <div class="mb-6">
-            <label class="px-5 mt-4 inline-flex items-center space-x-2">
-                <input id="checkAll" type="checkbox"
-                    class="w-4 h-4 text-[#3030F8] bg-gray-100 border-gray-300 rounded hover:scale-110 focus:ring-[#3030F8] cursor-pointer">
-                <span class="text-sm font-semibold text-gray-700">Pilih semua</span>
-            </label>
-        </div>
-
-        <!-- Pesan & Tombol Delete Terpilih -->
-        <div id="bulk-actions"
-            class="overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0 scale-95 mb-6 flex items-center justify-between bg-red-50 p-4 rounded-lg border border-red-200">
-            <p class="text-sm font-medium text-red-600">
-                <span id="selected-count">0</span> artikel dipilih
-            </p>
-
-            <div class="flex items-center gap-3">
-                <form id="bulk-delete-form" action="{{ route('posts.bulkDelete') }}" method="POST">
-                    @csrf
-                    <input type="hidden" id="selected-ids" name="selected_ids">
-                    <button type="submit"
-                        class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300">
-                        Delete
-                    </button>
-                </form>
-                <button onclick="cancelSelection()"
-                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">
-                    Cancel
-                </button>
-            </div>
-        </div>
-
-
 
         {{-- Tempat konten blog nanti --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[32px] px-2">
             @foreach ($posts as $post)
-                <div class="relative rounded-xl shadow-xl h-[467px] overflow-hidden bg-white group">
-                    <!-- Checkbox -->
-                    <input type="checkbox" name="selected_posts[]" value="{{ $post->id }}"
-                        class="item-checkbox w-4 h-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 absolute top-5 right-10">
-
-
+                <div class="relative rounded-xl w-full h-full overflow-hidden bg-[#D1D5DB8C] group">
                     <!-- Gambar -->
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="" class="w-full h-[266px] object-cover">
+                    <img src="{{ asset('storage/' . $post->image) }}" alt="" class="w-full h-[200px] object-cover">
 
                     <!-- Konten -->
                     <div class="px-4 py-4">
@@ -141,13 +99,22 @@
                                 Edit
                             </a>
 
+                            <!-- Delete -->
+                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                    class="w-[65px] h-[32px] rounded-md bg-red-500 text-white text-center flex items-center justify-center font-medium text-[14px] hover:scale-110 transition delete-btn">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
+
         <!-- Paginasi -->
-        <input type="hidden" id="all-post-ids" value="{{ $posts->pluck('id')->implode(',') }}">
         <div class="flex justify-center mt-10 space-x-2">
             {{-- Tombol Previous --}}
             @php
@@ -178,151 +145,8 @@
             @else
                 <span class="px-3 py-1 text-gray-400 cursor-not-allowed">Next »</span>
             @endif
-
         </div>
     </div>
-
-    <script>
-        const selectAllCheckbox = document.getElementById('select-all');
-        const individualCheckboxes = document.querySelectorAll('input[name="selected_posts[]"]');
-        const bulkActions = document.getElementById('bulk-actions');
-        const selectedCount = document.getElementById('selected-count');
-        const selectedIdsInput = document.getElementById('selected-ids');
-
-        function updateBulkActions() {
-            const checkedBoxes = [...individualCheckboxes].filter(cb => cb.checked);
-            const count = checkedBoxes.length;
-
-            if (count > 0) {
-                bulkActions.classList.remove('max-h-0', 'opacity-0', 'scale-95');
-                bulkActions.classList.add('max-h-40', 'opacity-100', 'scale-100');
-            } else {
-                bulkActions.classList.add('max-h-0', 'opacity-0', 'scale-95');
-                bulkActions.classList.remove('max-h-40', 'opacity-100', 'scale-100');
-            }
-
-            selectedCount.textContent = count;
-            const selectedIds = checkedBoxes.map(cb => cb.value);
-            selectedIdsInput.value = selectedIds.join(',');
-        }
-
-        individualCheckboxes.forEach(cb => {
-            cb.addEventListener('change', updateBulkActions);
-        });
-
-        selectAllCheckbox.addEventListener('change', function() {
-            individualCheckboxes.forEach(cb => cb.checked = this.checked);
-            updateBulkActions();
-        });
-
-        function cancelSelection() {
-            individualCheckboxes.forEach(cb => cb.checked = false);
-            selectAllCheckbox.checked = false;
-            updateBulkActions();
-        }
-    </script>
-
-    <script>
-        // Variabel untuk menyimpan semua ID yang dipilih
-        let selectedPosts = JSON.parse(localStorage.getItem('selectedPosts')) || {};
-        let allPostIds = []; // Ini akan menyimpan semua ID post yang ada di semua halaman
-
-        // Fungsi untuk mengumpulkan semua ID post (dipanggil saat inisialisasi)
-        function collectAllPostIds() {
-            allPostIds = [];
-            const allIdsInput = document.getElementById('all-post-ids');
-            if (allIdsInput && allIdsInput.value) {
-                allPostIds = allIdsInput.value.split(',');
-            }
-        }
-
-        // Fungsi untuk update tampilan checkbox
-        function updateCheckboxes() {
-            // Update checkbox di halaman saat ini
-            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                const postId = checkbox.value;
-                checkbox.checked = selectedPosts[postId] || false;
-            });
-
-            // Update checkbox "Pilih Semua" berdasarkan semua post, bukan hanya yang terlihat
-            const allChecked = allPostIds.length > 0 &&
-                allPostIds.every(id => selectedPosts[id]);
-            document.getElementById('checkAll').checked = allChecked;
-
-            // Update tampilan bulk actions
-            updateBulkActions();
-        }
-
-        // Fungsi untuk update bulk actions
-        function updateBulkActions() {
-            const selectedIds = Object.keys(selectedPosts).filter(id => selectedPosts[id]);
-            const count = selectedIds.length;
-            const bulkActions = document.getElementById('bulk-actions');
-            const selectedCount = document.getElementById('selected-count');
-            const selectedIdsInput = document.getElementById('selected-ids');
-
-            if (count > 0) {
-                bulkActions.classList.remove('max-h-0', 'opacity-0', 'scale-95');
-                bulkActions.classList.add('max-h-40', 'opacity-100', 'scale-100');
-            } else {
-                bulkActions.classList.add('max-h-0', 'opacity-0', 'scale-95');
-                bulkActions.classList.remove('max-h-40', 'opacity-100', 'scale-100');
-            }
-
-            selectedCount.textContent = count;
-            selectedIdsInput.value = selectedIds.join(',');
-        }
-
-        // Event listener saat dokumen siap
-        document.addEventListener('DOMContentLoaded', function() {
-            // Kumpulkan semua ID post yang ada
-            collectAllPostIds();
-
-            // Inisialisasi dari localStorage
-            updateCheckboxes();
-
-            // Handle checkbox "Pilih Semua"
-            document.getElementById('checkAll').addEventListener('change', function() {
-                const isChecked = this.checked;
-
-                // Update semua post di semua halaman
-                allPostIds.forEach(id => {
-                    selectedPosts[id] = isChecked;
-                });
-
-                localStorage.setItem('selectedPosts', JSON.stringify(selectedPosts));
-                updateCheckboxes();
-            });
-
-            // Handle checkbox individual
-            document.addEventListener('change', function(e) {
-                if (e.target.classList.contains('item-checkbox')) {
-                    const postId = e.target.value;
-                    selectedPosts[postId] = e.target.checked;
-                    localStorage.setItem('selectedPosts', JSON.stringify(selectedPosts));
-
-                    // Update "Pilih Semua" berdasarkan semua post
-                    const allChecked = allPostIds.length > 0 &&
-                        allPostIds.every(id => selectedPosts[id]);
-                    document.getElementById('checkAll').checked = allChecked;
-
-                    updateBulkActions();
-                }
-            });
-        });
-
-        // Fungsi untuk membatalkan seleksi
-        function cancelSelection() {
-            selectedPosts = {};
-            localStorage.removeItem('selectedPosts');
-            updateCheckboxes();
-        }
-
-        // Reset seleksi setelah submit
-        document.getElementById('bulk-delete-form')?.addEventListener('submit', function() {
-            localStorage.removeItem('selectedPosts');
-        });
-    </script>
 
     @if (session('success'))
         <script>
@@ -337,35 +161,29 @@
     @endif
 
     <script>
+        // SweetAlert for delete confirmation
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search');
-            const searchButton = document.querySelector('.flex.items-center.gap-3 button');
-            const cards = document.querySelectorAll('[data-card]'); // Sesuaikan dengan selector card Anda
+            // Add event listener to all delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.delete-form');
 
-            // Fungsi pencarian
-            function handleSearch() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-
-                cards.forEach(card => {
-                    const cardText = card.textContent.toLowerCase();
-                    if (cardText.includes(searchTerm)) {
-                        card.style.display = ''; // Tampilkan card yang cocok
-                    } else {
-                        card.style.display = 'none'; // Sembunyikan card yang tidak cocok
-                    }
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
-            }
-
-            // Event listener untuk tombol search
-            searchButton.addEventListener('click', handleSearch);
-
-            // Optional: Live search saat mengetik
-            searchInput.addEventListener('input', function() {
-                handleSearch();
             });
         });
     </script>
-
-
-
 @endsection
